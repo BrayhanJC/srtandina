@@ -1,0 +1,77 @@
+# Parámetros del pipeline. Todo cambio aquí es una decisión versionada:
+# DVC detecta qué etapas deben re-ejecutarse y MLflow registra los valores en cada corrida.
+
+data:
+  n_rows: 7000          # tamaño del dataset sintético (reemplazar por la ingesta del caso real)
+  seed: 42
+
+split:
+  test_size: 0.2
+  seed: 42
+
+model:
+  type: logistic_regression   # logistic_regression | random_forest | gradient_boosting
+  decision_threshold: 0.35    # probabilidad a partir de la cual se predice churn = 1
+  logistic_regression:
+    C: 1.0
+    max_iter: 1000
+  random_forest:
+    n_estimators: 300
+    max_depth: 8
+    min_samples_leaf: 5
+  gradient_boosting:
+    n_estimators: 200
+    learning_rate: 0.05
+    max_depth: 3
+
+# Supuestos para estimar el impacto de negocio (KPI de negocio "estimado").
+business:
+  customer_value: 600.0        # valor de un cliente retenido (miles de COP)
+  contact_cost: 25.0           # costo de contactar a un cliente en la campaña
+  retention_success_rate: 0.30 # proporción de clientes en riesgo que se retienen al contactarlos
+  weekly_capacity: 600         # llamadas por semana del call center (lista del lunes, Reto 04)
+
+# Política de equidad (contrato §7.1). La ratifica el Comité en el Reto 06.
+fairness:
+  max_recall_gap_senior_citizen: 0.10
+
+mlflow:
+  experiment: gpad-churn
+  registered_model: gpad-churn-model
+
+# Quality gate: condiciones mínimas para promover un modelo de @challenger a @champion.
+# El gate juzga la CALIDAD DEL MODELO, no la decisión de negocio: recall y precisión se miden a un
+# umbral de evaluación fijo (eval_threshold), no a model.decision_threshold. El umbral de decisión lo
+# fija el Sponsor según la capacidad del call center (Reto 06) y no puede hacer fallar el gate.
+gate:
+  eval_threshold: 0.30         # umbral fijo con el que se comparan todas las versiones
+  min_roc_auc: 0.75
+  min_recall: 0.70             # recall_at_eval (al eval_threshold)
+  min_precision: 0.45          # precision_at_eval (al eval_threshold)
+  max_drop_vs_champion: 0.01   # caída máxima de ROC-AUC tolerada frente al @champion actual
+
+monitoring:
+  drift_share_threshold: 0.25  # proporción de columnas con drift que dispara la alerta
+
+# Asistente de explicación con LLM (Reto 07). Ver docs/asistente_llm.md.
+llm:
+  provider: mock              # mock (sin LLM, para CI y pruebas) | ollama (local) | anthropic (Claude API)
+  model:
+    ollama: qwen3:4b          # modelo local pequeño; verifique con `ollama pull <modelo>`
+    anthropic: claude-opus-5-5
+  prompt_version: v1          # archivo prompts/explicacion_<version>.md
+  top_factors: 3              # factores que se entregan al LLM
+  exclude:                   # variables que el asistente nunca menciona (atributo sensible)
+  - senior_citizen
+  max_words: 90               # longitud máxima de la explicación (guardrail)
+  eval_cases: 15              # casos de evaluación (muestra fija de test.csv, semilla 42)
+  # Precios por millón de tokens para estimar costos (USD). Actualícelos según el proveedor.
+  price_per_mtok:
+    anthropic: {input: 4.0, output: 20.0}
+    ollama: {input: 0.0, output: 0.0}
+    mock: {input: 0.0, output: 0.0}
+
+# Criterios mínimos para aprobar una versión del prompt (quality gate del asistente).
+llm_gate:
+  min_guardrail_pass_rate: 0.90   # explicaciones que pasan todos los controles sin usar el respaldo
+  max_p95_latency_s: 20.0
