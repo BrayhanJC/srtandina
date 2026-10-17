@@ -7,12 +7,11 @@
 - Proyecto: SRT – Conecta Andina S.A.
 - Variante (V1–V6) y segmento: v4
 - Supuestos de la variante: 
-    customer_value:900.0 · 
-    contact_cost: 35.0 · 
-    retention_success_rate:0.30. 
-    capacidad semanal: 400· 
-    política de equidad: ≤ 0.10.
-    semilla del extracto: 2029
+
+| customer_value | contact_cost | retention_success_rate | capacidad semanal | política de equidad | semilla del extracto |
+|---|---|---|---|---|---|
+| 900.0 | 35.0 | 0.30 | 400 | ≤ 0.10 | 2029 |
+
 - Equipo y roles principal / secundario (Líder/PO · Data Scientist/Steward · MLOps Engineer):
 - Repositorio: https://github.com/BrayhanJC/srtandina
 
