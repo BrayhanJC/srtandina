@@ -5,10 +5,16 @@
 
 ## 1. Identificación
 - Proyecto: SRT – Conecta Andina S.A.
-- Variante (V1–V6) y segmento:
-- Supuestos de la variante: `customer_value` · `contact_cost` · `retention_success_rate` · capacidad semanal (`business.weekly_capacity`) · política de equidad (`fairness.max_recall_gap_senior_citizen`) · semilla del extracto
+- Variante (V1–V6) y segmento: v4
+- Supuestos de la variante: 
+    customer_value:900.0 · 
+    contact_cost: 35.0 · 
+    retention_success_rate:0.30. 
+    capacidad semanal: 400· 
+    política de equidad: ≤ 0.10.
+    semilla del extracto: 42
 - Equipo y roles principal / secundario (Líder/PO · Data Scientist/Steward · MLOps Engineer):
-- Repositorio:
+- Repositorio: https://github.com/BrayhanJC/srtandina
 
 ## 2. Problema de negocio y línea base
 

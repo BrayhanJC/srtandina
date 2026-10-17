@@ -29,7 +29,7 @@ business:
   customer_value: 900.0        # valor de un cliente retenido (miles de COP)
   contact_cost: 35.0           # costo de contactar a un cliente en la campaña
   retention_success_rate: 0.30 # proporción de clientes en riesgo que se retienen al contactarlos
-  weekly_capacity: 400         # llamadas por semana del call center (lista del lunes, Reto 04)
+  weekly_capacity: 400.0         # llamadas por semana del call center (lista del lunes, Reto 04)
 
 # Política de equidad (contrato §7.1). La ratifica el Comité en el Reto 06.
 fairness:
