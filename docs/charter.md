@@ -13,6 +13,13 @@
 | 900.0 | 35.0 | 0.30 | 400 | ≤ 0.10 | 2029 |
 
 - Equipo y roles principal / secundario (Líder/PO · Data Scientist/Steward · MLOps Engineer):
+
+| Rol Principal | Rol Secundario | Quien lo ejerce |
+|---|---|---|
+| Data Scientist / Data Steward | ML / MLOps Engineer | Juan Camilo Zuluaga Serna | 
+| Líder de proyecto / Product Owner | ML / MLOps Engineer | Jorge Andres Angel | 
+| ML / MLOps Engineer | Data Scientist / Data Steward | Brayhan Andres Jaramillo Castaño | 
+
 - Repositorio: https://github.com/BrayhanJC/srtandina
 
 ## 2. Problema de negocio y línea base
