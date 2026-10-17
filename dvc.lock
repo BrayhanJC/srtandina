@@ -135,16 +135,16 @@ stages:
     params:
       params.yaml:
         business:
-          customer_value: 600.0
-          contact_cost: 25.0
+          customer_value: 900.0
+          contact_cost: 35.0
           retention_success_rate: 0.3
-          weekly_capacity: 600
+          weekly_capacity: 400.0
         gate.eval_threshold: 0.3
         model.decision_threshold: 0.35
     outs:
     - path: metrics.json
       hash: md5
-      md5: 6316b7fa090e06a7e7a9ff7e7418cd5f
+      md5: ac36998f665895971896ebc2d13a4972
       size: 345
     - path: reports/confusion_matrix.png
       hash: md5

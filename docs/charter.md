@@ -12,7 +12,7 @@
     retention_success_rate:0.30. 
     capacidad semanal: 400· 
     política de equidad: ≤ 0.10.
-    semilla del extracto: 42
+    semilla del extracto: 2029
 - Equipo y roles principal / secundario (Líder/PO · Data Scientist/Steward · MLOps Engineer):
 - Repositorio: https://github.com/BrayhanJC/srtandina
 
