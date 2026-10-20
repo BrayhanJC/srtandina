@@ -24,19 +24,9 @@
 
 ## 2. Problema de negocio y línea base
 
-## 3. ML Canvas (razonamiento de cada bloque)
-| Bloque | Canvas canónico del SRT | Razonamiento del equipo | Adaptación a la variante |
-|---|---|---|---|
-| Propuesta de valor | | | |
-| Tarea de predicción | | | |
-| Decisiones | | | |
-| Haciendo predicciones | | | |
-| Recolección de datos | | | |
-| Fuentes de datos | | | |
-| Simulación de impacto | | | |
-| Construyendo modelos | | | |
-| Features | | | |
-| Monitoreo | | | |
+## 3 ML Canvas (razonamiento de cada bloque)
+| Bloque | Canónico (resumen en una línea) | Por qué está así| Qué se rompería si fuera distinto | Adaptación a la variante |
+|---|---|---|---|---|
 
 **Bloque peor justificado y por qué** ("todos están bien justificados" no cuenta):
 
