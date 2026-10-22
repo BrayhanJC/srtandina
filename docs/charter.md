@@ -67,12 +67,16 @@ Llamar a un cliente tiene valor esperado positivo si su probabilidad de deserci�
 **Bloque peor justificado y por qué** ("todos están bien justificados" no cuenta):
 
 ## 4. KPIs
+## 4. KPIs
+
+Líneas base provisionales hasta el Reto 03 (`metrics.json`, commit `0793b28`, supuestos V4). La exactitud no se usa: con 27 % de desertores, decir "nadie se va" acierta el 73 % (Contrato §7.3).
+
 | Tipo | KPI | Línea base | Meta | Cómo se mide |
 |---|---|---|---|---|
-| Técnico | | | | |
-| Negocio (estimado) | | | | |
-| Operación | | | | |
-| Gestión | | | | |
+| Técnico | `pr_auc` | 0.6627 · `metrics.json`, (provisional) | ≥ 0.66 con el extracto real | `metrics.json` en cada `dvc repro` |
+| Negocio (estimado) | `net_savings_vs_random` (ahorro frente a llamar al azar, Contrato §13) | 39 325.89 miles de COP · `metrics.json`, (provisional) | > 0 | `metrics.json`; se recalcula en `reports/business/` en el Reto 06 |
+| Operación | Lista disponible el lunes a las 07:00 | Sin procedimiento (hoy se arma a mano) | 100 % de las semanas (Contrato §5) | Hora del archivo de la lista (Reto 04) |
+| Gestión | Tags `rNN` publicados a tiempo | — (primer reto) | 100 % antes de la fecha límite (Contrato §6.2) | Fecha del tag en GitHub |
 
 ## 5. Alcance y nivel de madurez MLOps objetivo
 
