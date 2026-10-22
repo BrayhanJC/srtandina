@@ -24,6 +24,31 @@
 
 ## 2. Problema de negocio y línea base
 
+**Decisión que cambia.** 
+Cada lunes a las 07:00, el call center de retención de Conecta Andina decide a cuáles clientes de fibra premium (V4) llamar esa semana, con un tope de 400 llamadas (contrato §5 y §11). El umbral de la lista lo aprueba el Sponsor, la Gerencia Comercial (§9.2). El SRT le entrega al agente una lista ordenada por probabilidad de deserción a 30 días, con los factores que explican cada caso (§1).
+
+**Situación actual y su problema.** 
+Hoy los agentes eligen con tres reglas informales: "los que se quejaron", "los de contrato mes a mes" y "los que pagan más" (Reto 00 §2.2, bloque 1). Ninguna cabe en la capacidad ni distingue riesgo real:
+- Hay 771 clientes mes a mes en el lote, casi el doble de la capacidad, y solo el 39.7 % de ellos deserta.
+- Con cualquiera de las tres reglas, de 400 llamadas solo 165–170 llegan a un desertor (41–43 %). El modelo de referencia llega a 248 (62 %).
+- Los desertores que no se quejan ni pagan mucho, los que "desertan en silencio", no entran en ninguna regla.
+
+**Costo de no hacer nada** 
+(supuestos V4; lote de referencia = conjunto de prueba de 1 400 clientes, §5 "Tamaño del lote"; cifras en miles de COP, provisionales hasta el Reto 03):
+- En cada lote hay 384 clientes que desertan (27.4 %). Sin campaña se pierde un valor de 384 × 900 = **345 600**.
+- Con las reglas informales, el ahorro neto de la campaña es de ≈ 30 550–31 900 por lote. Con la lista del modelo es de 52 960.
+- Seguir con las reglas deja de ahorrar ≈ **21 000–22 400 por lote semanal**. Supuestos: cada desertor contactado se retiene con probabilidad 0.30 y cada llamada cuesta 35.
+
+**Punto de equilibrio del contacto.**
+
+    **valor esperado de llamar** = p × retention_success_rate × customer_value − contact_cost
+    ** p* **= contact_cost / (retention_success_rate × customer_value) = 35 / (0.30 × 900) = 35 / 270 ≈ 0.13
+
+Llamar a un cliente tiene valor esperado positivo si su probabilidad de deserción supera el **13 %**.
+
+**Qué restricción manda: la capacidad.** En el conjunto de prueba (1 400 clientes), **834** tienen probabilidad ≥ p*, y la capacidad es de **400** llamadas, el 28.6 % del lote. Hay más del doble de clientes que valdría la pena llamar de los que caben. La probabilidad del cliente número 400 de la lista es ≈ 0.39, muy por encima de p*. En V4, la restricción económica no es la que limita. Esto sirve como argumento para pedir más capacidad o para justificar que el umbral quede alrededor de 0.39 y no de 0.13.
+
+
 ## 3 ML Canvas (razonamiento de cada bloque)
 | Bloque | Canónico (resumen en una línea) | Por qué está así | Qué se rompería si fuera distinto | Adaptación a la variante (V4 – Hogar fibra premium) |
 |---|---|---|---|---|
