@@ -67,9 +67,6 @@ Llamar a un cliente tiene valor esperado positivo si su probabilidad de deserci�
 **Bloque peor justificado y por qué** ("todos están bien justificados" no cuenta):
 
 ## 4. KPIs
-## 4. KPIs
-
-Líneas base provisionales hasta el Reto 03 (`metrics.json`, commit `0793b28`, supuestos V4). La exactitud no se usa: con 27 % de desertores, decir "nadie se va" acierta el 73 % (Contrato §7.3).
 
 | Tipo | KPI | Línea base | Meta | Cómo se mide |
 |---|---|---|---|---|
