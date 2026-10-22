@@ -41,8 +41,8 @@ Hoy los agentes eligen con tres reglas informales: "los que se quejaron", "los d
 
 **Punto de equilibrio del contacto.**
 
-    **valor esperado de llamar** = p × retention_success_rate × customer_value − contact_cost
-    ** p* **= contact_cost / (retention_success_rate × customer_value) = 35 / (0.30 × 900) = 35 / 270 ≈ 0.13
+    valor esperado de llamar = p × retention_success_rate × customer_value − contact_cost
+    p* = contact_cost / (retention_success_rate × customer_value) = 35 / (0.30 × 900) = 35 / 270 ≈ 0.13
 
 Llamar a un cliente tiene valor esperado positivo si su probabilidad de deserción supera el **13 %**.
 
