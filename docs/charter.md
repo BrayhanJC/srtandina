@@ -136,26 +136,77 @@ Para V4 se prioriza un sistema reproducible, probado y monitoreado, con automati
 
 
 ## 6. Roles, habilidades y RACI
-(Las filas de umbral de decisión, umbrales del gate, brecha de equidad, rollback, cambio del contrato
-de datos y envío de datos a un LLM externo tienen el **A** que fija el contrato §9.2.)
+
+### 6.1. Roles del equipo
+
+| Integrante | Rol principal | Rol secundario |
+|---|---|---|
+| Jorge Andrés Ángel | Líder / Product Owner | ML / MLOps Engineer |
+| Juan Camilo Zuluaga Serna | Data Scientist / Data Steward | ML / MLOps Engineer |
+| Brayhan Andrés Jaramillo Castaño | ML / MLOps Engineer | Data Scientist / Data Steward |
+
+### 6.2. Matriz RACI
+
+- A: Responsable final de la decisión.
+- R: Responsable de ejecución.
+- C: Consultado.
+- I: Informado.
+
+| Actividad | Sponsor | Líder/PO | DS/Steward | MLOps | Dueño dato | Comité |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| Project Charter y ML Canvas | C | A/R | C | C | C | I |
+| Backlog y priorización | I | A/R | C | C |  |  |
+| Contrato de datos y sus cambios | I | I | R | C | **A** |  |
+| Pipeline de datos y versionado |  | I | C | A/R |  |  |
+| Experimentos y selección de modelo |  | I | A/R | C |  |  |
+| Umbrales del quality gate `gate.*` | I | **A**¹ | C | R |  | C |
+| Umbral de decisión del negocio `decision_threshold` | **A** | C | R | I |  |  |
+| Brecha de equidad aceptable | I | C | R | I |  | **A** |
+| Promoción a @champion | I | **A** | C | R |  |  |
+| Despliegue y monitoreo |  | I | C | A/R |  |  |
+| Rollback ante incidente | I | **A** | I | R |  |  |
+| Envío de datos a un proveedor de LLM externo | **A** | C | C | R | C | C |
+| Model card y comunicación de resultados | I | **A** | R | C | I | I |
+
+### 6.3. Gestión de los riesgos del equipo
+
+Se identificaron tres riesgos prioritarios relacionados con la ejecución del proyecto: infraestructura tecnológica insuficiente (R-01), brechas de conocimiento en tecnologías requeridas (R-02) y disponibilidad limitada de tiempo para desarrollar las actividades (R-03).
+
+El Líder / PO coordinará la planificación y el seguimiento de sus respuestas; el MLOps Engineer liderará las verificaciones de infraestructura, y el Data Scientist / Steward contribuirá a las pruebas técnicas y a la transferencia de conocimientos.
+
+Las acciones, disparadores, probabilidades, impactos y estados se documentan en [Registro de riesgos](riesgos.md).
+
 
 ## 7. Backlog estimado, Definición de Terminado y cronograma
 
-| Actividad | Sponsor | Líder / PO | Data Scientist / Steward | MLOps Engineer | Dueño del dato | Comité |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| Project Charter y ML Canvas | | | | | | |
-| Backlog y priorización | | | | | | |
-| Contrato de datos y sus cambios | | | | | **A** | |
-| Pipeline de datos y versionado | | | | | | |
-| Experimentos y selección de modelo | | | | | | |
-| Umbrales del quality gate (`gate.*`) | | **A** <sup>1</sup> | | | | |
-| Umbral de decisión del negocio (`model.decision_threshold`) | **A** | | | | | |
-| Brecha de equidad aceptable | | | | | | **A** |
-| Promoción a `@champion` | | **A** | | | | |
-| Despliegue y monitoreo | | | | | | |
-| Rollback ante incidente | | **A** | | | | |
-| Envío de datos a un proveedor de LLM externo | **A** | | | | | |
-| Model card y comunicación de resultados | | | | | | |
+### 7.1. Marco de gestión
+
+Se adopta un marco híbrido Kanban + CRISP-ML(Q), considerando la disponibilidad parcial del equipo, las dependencias técnicas y las fechas de entrega del curso. Cada iteración corresponde al ciclo de planificación, ejecución y revisión de los retos asignados a un FDS. Se conserva una reunión inicial de planificación, seguimiento asincrónico mediante GitHub Projects y revisión previa a cada entrega. Entre fines de semana, las tareas se coordinan mediante el tablero y pull requests, notificando oportunamente los bloqueos de infraestructura, conocimiento o tiempo.
+
+### 7.2. Definición de Terminado (DoD)
+
+| Criterio | Aplicación | Evidencia |
+|---|---|---|
+| Pull Request revisado por otro integrante antes de integrar a `main`. | Desde Reto 01. | PR aprobado y fusionado. |
+| `dvc repro` reproduce el resultado y `dvc.lock` está actualizado. | Desde Reto 03, para cambios que afecten el pipeline. | Pipeline reproducido y archivos versionados. |
+| Integración continua (CI) satisfactoria. | Desde Reto 04. | GitHub Actions en verde. |
+| Decisiones relevantes registradas en `docs/decision_log.md`. | Desde Reto 00. | Entrada con responsable y evidencia. |
+| Registro de riesgos revisado y actualizado según corresponda. | Desde Reto 01. | `docs/riesgos.md` vigente. |
+
+### 7.3. Cronograma por fin de semana
+
+| FDS | Reto | Responsable (R) | Tag y fecha límite |
+|---|---|---|---|
+| 2 | 02 — Gobierno y contrato de datos | Juan Camilo Zuluaga Serna (DS/Steward) | `r02` — FDS 2 + 7 días |
+| 2 | 03 — Reproducibilidad y versionado | Brayhan Andrés Jaramillo Castaño (MLOps) | `r03` — FDS 2 + 7 días |
+| 3 | 04 — Pruebas e integración continua | Brayhan Andrés Jaramillo Castaño (MLOps) | `r04` — FDS 3 + 7 días |
+| 3 | 05 — Despliegue, monitoreo y operación | Brayhan Andrés Jaramillo Castaño (MLOps) | `r05` — FDS 3 + 7 días |
+| 4 | 06 — Impacto, equidad y gobernanza | Juan Camilo Zuluaga Serna (DS/Steward) | `r06` — Inicio S8 |
+| 4 | 07 — Asistente de explicación con LLM | Juan Camilo Zuluaga Serna (DS/Steward), con apoyo MLOps | `r07` — Inicio S8 |
+| S8 | Proyecto Final — Simulacro y defensa | Jorge Andrés Ángel (Líder/PO), con participación del equipo | `final` — S8, según horario acordado |
+
+Las asignaciones de responsabilidad se revisarán frente a la capacidad real del equipo y las dependencias de cada historia. Las fechas definitivas se completarán cuando se confirme el calendario académico.
+
 
 ## 8. Riesgos principales
 Los cinco riesgos de mayor exposición. El registro completo y vivo está en [`riesgos.md`](riesgos.md).
