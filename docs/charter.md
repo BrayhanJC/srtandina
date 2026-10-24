@@ -147,25 +147,24 @@ Para V4 se prioriza un sistema reproducible, probado y monitoreado, con automati
 
 ### 6.2. Matriz RACI
 
-A: Responsable final de la decisión.
-R: Responsable de ejecución.
-C: Consultado.
-I: Informado.
-—: Sin participación directa.
+- A: Responsable final de la decisión.
+- R: Responsable de ejecución.
+- C: Consultado.
+- I: Informado.
 
 | Actividad | Sponsor | Líder/PO | DS/Steward | MLOps | Dueño dato | Comité |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | Charter y ML Canvas | C | A/R | C | C | C | I |
-| Backlog y priorización | I | A/R | C | C | – | – |
-| Contrato de datos | I | I | R | C | **A** | – |
-| Pipeline y versionado | – | I | C | A/R | – | – |
-| Experimentos y modelo | – | I | A/R | C | – | – |
-| Umbrales `gate.*` | I | **A**¹ | C | R | – | C |
-| `decision_threshold` | **A** | C | R | I | – | – |
-| Brecha de equidad | I | C | R | I | – | **A** |
-| Promoción a @champion | I | **A** | C | R | – | – |
-| Despliegue y monitoreo | – | I | C | A/R | – | – |
-| Rollback | I | **A** | I | R | – | – |
+| Backlog y priorización | I | A/R | C | C |  |  |
+| Contrato de datos | I | I | R | C | **A** |  |
+| Pipeline y versionado |  | I | C | A/R |  |  |
+| Experimentos y modelo |  | I | A/R | C |  |  |
+| Umbrales `gate.*` | I | **A**¹ | C | R |  | C |
+| `decision_threshold` | **A** | C | R | I |  |  |
+| Brecha de equidad | I | C | R | I |  | **A** |
+| Promoción a @champion | I | **A** | C | R |  |  |
+| Despliegue y monitoreo |  | I | C | A/R |  |  |
+| Rollback | I | **A** | I | R |  |  |
 | Envío a LLM externo | **A** | C | C | R | C | C |
 | Model card y comunicación | I | **A** | R | C | I | I |
 
