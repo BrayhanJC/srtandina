@@ -139,8 +139,6 @@ Para V4 se prioriza un sistema reproducible, probado y monitoreado, con automati
 (Las filas de umbral de decisión, umbrales del gate, brecha de equidad, rollback, cambio del contrato
 de datos y envío de datos a un LLM externo tienen el **A** que fija el contrato §9.2.)
 
-## 7. Backlog estimado, Definición de Terminado y cronograma
-
 | Actividad | Sponsor | Líder / PO | Data Scientist / Steward | MLOps Engineer | Dueño del dato | Comité |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | Project Charter y ML Canvas | | | | | | |
@@ -156,6 +154,8 @@ de datos y envío de datos a un LLM externo tienen el **A** que fija el contrato
 | Rollback ante incidente | | **A** | | | | |
 | Envío de datos a un proveedor de LLM externo | **A** | | | | | |
 | Model card y comunicación de resultados | | | | | | |
+
+## 7. Backlog estimado, Definición de Terminado y cronograma
 
 ## 8. Riesgos principales
 Los cinco riesgos de mayor exposición. El registro completo y vivo está en [`riesgos.md`](riesgos.md).
