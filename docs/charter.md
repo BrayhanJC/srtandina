@@ -83,5 +83,21 @@ de datos y envío de datos a un LLM externo tienen el **A** que fija el contrato
 
 ## 7. Backlog estimado, Definición de Terminado y cronograma
 
+| Actividad | Sponsor | Líder / PO | Data Scientist / Steward | MLOps Engineer | Dueño del dato | Comité |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| Project Charter y ML Canvas | | | | | | |
+| Backlog y priorización | | | | | | |
+| Contrato de datos y sus cambios | | | | | **A** | |
+| Pipeline de datos y versionado | | | | | | |
+| Experimentos y selección de modelo | | | | | | |
+| Umbrales del quality gate (`gate.*`) | | **A** <sup>1</sup> | | | | |
+| Umbral de decisión del negocio (`model.decision_threshold`) | **A** | | | | | |
+| Brecha de equidad aceptable | | | | | | **A** |
+| Promoción a `@champion` | | **A** | | | | |
+| Despliegue y monitoreo | | | | | | |
+| Rollback ante incidente | | **A** | | | | |
+| Envío de datos a un proveedor de LLM externo | **A** | | | | | |
+| Model card y comunicación de resultados | | | | | | |
+
 ## 8. Riesgos principales
 Los cinco riesgos de mayor exposición. El registro completo y vivo está en [`riesgos.md`](riesgos.md).
