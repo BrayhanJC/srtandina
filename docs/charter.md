@@ -154,19 +154,19 @@ Para V4 se prioriza un sistema reproducible, probado y monitoreado, con automati
 
 | Actividad | Sponsor | Líder/PO | DS/Steward | MLOps | Dueño dato | Comité |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| Charter y ML Canvas | C | A/R | C | C | C | I |
+| Project Charter y ML Canvas | C | A/R | C | C | C | I |
 | Backlog y priorización | I | A/R | C | C |  |  |
-| Contrato de datos | I | I | R | C | **A** |  |
-| Pipeline y versionado |  | I | C | A/R |  |  |
-| Experimentos y modelo |  | I | A/R | C |  |  |
-| Umbrales `gate.*` | I | **A**¹ | C | R |  | C |
-| `decision_threshold` | **A** | C | R | I |  |  |
-| Brecha de equidad | I | C | R | I |  | **A** |
+| Contrato de datos y sus cambios | I | I | R | C | **A** |  |
+| Pipeline de datos y versionado |  | I | C | A/R |  |  |
+| Experimentos y selección de modelo |  | I | A/R | C |  |  |
+| Umbrales del quality gate `gate.*` | I | **A**¹ | C | R |  | C |
+| Umbral de decisión del negocio `decision_threshold` | **A** | C | R | I |  |  |
+| Brecha de equidad aceptable | I | C | R | I |  | **A** |
 | Promoción a @champion | I | **A** | C | R |  |  |
 | Despliegue y monitoreo |  | I | C | A/R |  |  |
-| Rollback | I | **A** | I | R |  |  |
-| Envío a LLM externo | **A** | C | C | R | C | C |
-| Model card y comunicación | I | **A** | R | C | I | I |
+| Rollback ante incidente | I | **A** | I | R |  |  |
+| Envío de datos a un proveedor de LLM externo | **A** | C | C | R | C | C |
+| Model card y comunicación de resultados | I | **A** | R | C | I | I |
 
 ### 6.3. Gestión de los riesgos del equipo
 
