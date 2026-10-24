@@ -136,24 +136,56 @@ Para V4 se prioriza un sistema reproducible, probado y monitoreado, con automati
 
 
 ## 6. Roles, habilidades y RACI
-(Las filas de umbral de decisión, umbrales del gate, brecha de equidad, rollback, cambio del contrato
-de datos y envío de datos a un LLM externo tienen el **A** que fija el contrato §9.2.)
+
+### 6.1. Roles del equipo
+
+| Integrante | Rol principal | Rol secundario |
+|---|---|---|
+| Jorge Andrés Ángel | Líder / Product Owner | ML / MLOps Engineer |
+| Juan Camilo Zuluaga Serna | Data Scientist / Data Steward | ML / MLOps Engineer |
+| Brayhan Andrés Jaramillo Castaño | ML / MLOps Engineer | Data Scientist / Data Steward |
+
+### 6.2. Matriz RACI
+
+A: Responsable final de la decisión.
+R: Responsable de ejecución.
+C: Consultado.
+I: Informado.
+—: Sin participación directa.
 
 | Actividad | Sponsor | Líder / PO | Data Scientist / Steward | MLOps Engineer | Dueño del dato | Comité |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| Project Charter y ML Canvas | | | | | | |
-| Backlog y priorización | | | | | | |
-| Contrato de datos y sus cambios | | | | | **A** | |
-| Pipeline de datos y versionado | | | | | | |
-| Experimentos y selección de modelo | | | | | | |
-| Umbrales del quality gate (`gate.*`) | | **A** <sup>1</sup> | | | | |
-| Umbral de decisión del negocio (`model.decision_threshold`) | **A** | | | | | |
-| Brecha de equidad aceptable | | | | | | **A** |
-| Promoción a `@champion` | | **A** | | | | |
-| Despliegue y monitoreo | | | | | | |
-| Rollback ante incidente | | **A** | | | | |
-| Envío de datos a un proveedor de LLM externo | **A** | | | | | |
-| Model card y comunicación de resultados | | | | | | |
+|---|---|---|---|---|---|---|
+| Project Charter y ML Canvas | C | A/R | R | C | I | I |
+| Backlog y priorización | C | A/R | R | R | — | I |
+| Contrato de datos y sus cambios | I | C | R | C | A | I |
+| Pipeline de datos y versionado | — | A | R | R | C | — |
+| Experimentos y selección del modelo | I | A | R | C | C | — |
+| Umbrales del quality gate (`gate.*`) | I | A | R | C | — | C* |
+| Umbral de decisión (`model.decision_threshold`) | A | R | R | C | I | C |
+| Brecha de equidad aceptable | I | R | R | C | C | A |
+| Promoción a `@champion` | I | A | C | R | — | I |
+| Despliegue y monitoreo | I | A | C | R | C | — |
+| Rollback ante incidente | I | A | C | R | I | I |
+| Envío de datos a proveedor LLM externo | A | R | R | C | C | I |
+| Model card y comunicación de resultados | C | A | R | C | C | I |
+| Evaluación de infraestructura disponible (R-01) | I | A | C | R | — | — |
+| Pruebas de viabilidad técnica y alternativas (R-01) | I | A | R | R | — | — |
+| Identificación de brechas tecnológicas (R-02) | — | A | R | R | — | — |
+| Capacitación y transferencia de conocimientos (R-02) | — | A | R | R | — | — |
+| Estimación de tiempos y capacidad del equipo (R-03) | I | A/R | R | R | — | — |
+| Seguimiento y redistribución de actividades (R-03) | I | A/R | R | R | — | — |
+| Actualización del registro de riesgos | I | A | R | R | C | I |
+
+*El Comité debe aprobar los umbrales del quality gate, conforme al Contrato del sistema §9.2.
+
+### 6.3. Gestión de los riesgos del equipo
+
+Se identificaron tres riesgos prioritarios relacionados con la ejecución del proyecto: infraestructura tecnológica insuficiente (R-01), brechas de conocimiento en tecnologías requeridas (R-02) y disponibilidad limitada de tiempo para desarrollar las actividades (R-03).
+
+El Líder / PO coordinará la planificación y el seguimiento de sus respuestas; el MLOps Engineer liderará las verificaciones de infraestructura, y el Data Scientist / Steward contribuirá a las pruebas técnicas y a la transferencia de conocimientos.
+
+Las acciones, disparadores, probabilidades, impactos y estados se documentan en [Registro de riesgos](riesgos.md).
+
 
 ## 7. Backlog estimado, Definición de Terminado y cronograma
 
