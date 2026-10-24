@@ -179,5 +179,34 @@ Las acciones, disparadores, probabilidades, impactos y estados se documentan en 
 
 ## 7. Backlog estimado, Definición de Terminado y cronograma
 
+### 7.1. Marco de gestión
+
+Se adopta un marco híbrido Kanban + CRISP-ML(Q), considerando la disponibilidad parcial del equipo, las dependencias técnicas y las fechas de entrega del curso. Cada iteración corresponde al ciclo de planificación, ejecución y revisión de los retos asignados a un FDS. Se conserva una reunión inicial de planificación, seguimiento asincrónico mediante GitHub Projects y revisión previa a cada entrega. Entre fines de semana, las tareas se coordinan mediante el tablero y pull requests, notificando oportunamente los bloqueos de infraestructura, conocimiento o tiempo.
+
+### 7.2. Definición de Terminado (DoD)
+
+| Criterio | Aplicación | Evidencia |
+|---|---|---|
+| Pull Request revisado por otro integrante antes de integrar a `main`. | Desde Reto 01. | PR aprobado y fusionado. |
+| `dvc repro` reproduce el resultado y `dvc.lock` está actualizado. | Desde Reto 03, para cambios que afecten el pipeline. | Pipeline reproducido y archivos versionados. |
+| Integración continua (CI) satisfactoria. | Desde Reto 04. | GitHub Actions en verde. |
+| Decisiones relevantes registradas en `docs/decision_log.md`. | Desde Reto 00. | Entrada con responsable y evidencia. |
+| Registro de riesgos revisado y actualizado según corresponda. | Desde Reto 01. | `docs/riesgos.md` vigente. |
+
+### 7.3. Cronograma por fin de semana
+
+| FDS | Reto | Responsable (R) | Tag y fecha límite |
+|---|---|---|---|
+| 2 | 02 — Gobierno y contrato de datos | Juan Camilo Zuluaga Serna (DS/Steward) | `r02` — FDS 2 + 7 días |
+| 2 | 03 — Reproducibilidad y versionado | Brayhan Andrés Jaramillo Castaño (MLOps) | `r03` — FDS 2 + 7 días |
+| 3 | 04 — Pruebas e integración continua | Brayhan Andrés Jaramillo Castaño (MLOps) | `r04` — FDS 3 + 7 días |
+| 3 | 05 — Despliegue, monitoreo y operación | Brayhan Andrés Jaramillo Castaño (MLOps) | `r05` — FDS 3 + 7 días |
+| 4 | 06 — Impacto, equidad y gobernanza | Juan Camilo Zuluaga Serna (DS/Steward) | `r06` — Inicio S8 |
+| 4 | 07 — Asistente de explicación con LLM | Juan Camilo Zuluaga Serna (DS/Steward), con apoyo MLOps | `r07` — Inicio S8 |
+| S8 | Proyecto Final — Simulacro y defensa | Jorge Andrés Ángel (Líder/PO), con participación del equipo | `final` — S8, según horario acordado |
+
+Las asignaciones de responsabilidad se revisarán frente a la capacidad real del equipo y las dependencias de cada historia. Las fechas definitivas se completarán cuando se confirme el calendario académico.
+
+
 ## 8. Riesgos principales
 Los cinco riesgos de mayor exposición. El registro completo y vivo está en [`riesgos.md`](riesgos.md).
