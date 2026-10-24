@@ -77,6 +77,64 @@ Llamar a un cliente tiene valor esperado positivo si su probabilidad de deserci�
 
 ## 5. Alcance y nivel de madurez MLOps objetivo
 
+
+## 5. Alcance y nivel de madurez MLOps objetivo
+
+### 5.1. Alcance del proyecto
+
+| Incluido | Excluido o extensión opcional |
+|---|---|
+| Formulación, ML Canvas, KPIs, roles, RACI, backlog y gestión de riesgos (Retos 00–01). | Funcionalidades del catálogo extendido que no forman parte de los Retos 00–07. |
+| Ingesta, limpieza, validación y gobernanza del extracto CRM (Reto 02). | Variables adicionales al modelo canónico sin aprobación del contrato. |
+| Pipeline reproducible con DVC, experimentos, registro de modelos, quality gate y rollback (Reto 03). | Entrenamiento continuo automático sin intervención humana. |
+| Pruebas automatizadas, integración continua y generación de la lista semanal (Reto 04). | Entrega continua y despliegue automático de nuevas versiones. |
+| API de predicción, monitoreo, alertas y runbook (Reto 05). | Despliegues shadow y canary. |
+| Evaluación económica, equidad y model card (Reto 06). | Extensiones no exigidas para el sistema de referencia. |
+| Asistente LLM con evaluación, controles y respaldo (Reto 07). | Funcionalidades de IA generativa fuera de la explicación controlada. |
+| Integración, simulacro de incidente y defensa (Proyecto Final, S8). | Funcionalidades no contempladas en el alcance aprobado. |
+
+Las extensiones opcionales no otorgan puntos adicionales (Reto 00 §4.2).
+
+### 5.2. Nivel de madurez MLOps objetivo
+
+| Escala | Nivel objetivo | Características aplicadas al SRT |
+|---|---|---|
+| Google (0–2) | Nivel 0 avanzado | Entrenamiento reproducible y versionado, pipeline ejecutable, registro de modelos, pruebas y monitoreo, sin entrenamiento continuo autónomo. |
+| Microsoft (0–4) | Nivel 2 como referencia funcional | Entrenamiento ejecutable y trazable, seguimiento de experimentos, artefactos versionados y promoción controlada de modelos. |
+
+Se adopta Google nivel 0 avanzado, con prácticas cercanas al nivel 2 de Microsoft, porque el SRT requiere reproducibilidad y controles operativos, pero no necesita entrenamiento continuo autónomo ni despliegue automático de nuevas versiones.
+
+La correspondencia entre ambas escalas es aproximada: no representan niveles técnicamente idénticos.
+
+### 5.3. Justificación mediante los cinco factores
+
+| Factor | Situación en V4 — Hogar fibra premium | Hacia dónde empuja |
+|---|---|---|
+| Número de modelos | Un modelo de clasificación binaria, con versiones `@challenger`, `@champion` y `@previous` (Contrato §4). | Madurez moderada: registro y control de versiones, sin infraestructura compleja de despliegue. |
+| Velocidad de cambio del entorno | El comportamiento de deserción puede cambiar; las etiquetas de `churn` llegan a T+30 (Contrato §§2.1 y 5). | Mayor monitoreo y trazabilidad, sin reentrenamiento automático ante cualquier alerta. |
+| Criticidad de la decisión | El SRT prioriza un máximo de 400 contactos semanales, con un valor supuesto de 900 mil COP por cliente y un costo de 35 mil COP por contacto (Contrato §11). | Mayor control de calidad, aprobación humana y capacidad de rollback. |
+| Regulación | Tratamiento de datos personales, Ley 1581 de 2012, CONPES 4144 y brecha máxima de recall de 0.10 para `senior_citizen` (Contrato §§2, 9.2 y 11). | Mayor gobernanza, validación bloqueante, evaluación de equidad y supervisión de decisiones críticas. |
+| Frecuencia de predicción | Batch semanal los lunes, servicio `/predict` durante la operación y reentrenamiento mensual (Contrato §5). | Automatización de inferencia y monitoreo; control manual de la promoción del modelo. |
+
+### 5.4. Procesos manuales a propósito
+
+| Paso manual | Responsable | Por qué se conserva manual |
+|---|---|---|
+| Revisar alertas y determinar si se requiere reentrenamiento extraordinario. | Data Scientist / Data Steward. | Una alerta de drift no demuestra por sí sola deterioro del modelo; las etiquetas se reciben a T+30. |
+| Activar y supervisar el reentrenamiento mensual. | Data Scientist / Data Steward. | Permite verificar los datos y registrar la corrida antes de proponer una versión nueva. El pipeline de entrenamiento sigue siendo reproducible. |
+| Aprobar los umbrales del quality gate. | Líder / PO, con aprobación del comité. | Los criterios de calidad deben ser acordados antes de evaluar una promoción (Contrato §9.2). |
+| Evaluar y ejecutar la promoción de `@challenger` a `@champion`. | Líder / PO supervisa; ML / MLOps Engineer ejecuta. | Ninguna versión debe llegar a producción sin `gate.json` aprobado y una decisión registrada (Contrato §4). |
+| Aprobar `model.decision_threshold`. | Sponsor — Gerencia Comercial. | El umbral responde al valor económico, la capacidad semanal y la política de equidad, no únicamente al desempeño estadístico (Contrato §9.2). |
+| Aprobar excepciones de equidad. | Comité, presidido por el docente. | La política V4 establece `recall_gap_senior_citizen ≤ 0.10`; cualquier excepción requiere evaluación y decisión formal (Contrato §§9.2 y 11). |
+| Aprobar cambios del contrato de datos. | Dueño del dato — Jefatura de CRM y Facturación. | Impide modificar unilateralmente reglas de calidad, protección y finalidad de los datos (Contrato §9.2). |
+| Autorizar el rollback ante incidentes. | Líder / PO; ejecuta ML / MLOps Engineer. | La reversión debe responder a un diagnóstico sustentado y dejar evidencia (Contrato §9.2). |
+
+### 5.5. Decisión de alcance
+
+Para V4 se prioriza un sistema reproducible, probado y monitoreado, con automatización de las tareas operativas repetitivas y aprobación humana de decisiones críticas. Este nivel es suficiente para cumplir los Retos 00–07 y el Proyecto Final sin incorporar entrenamiento continuo automático, despliegues progresivos ni entrega continua, que aumentarían la complejidad sin ser requisitos del alcance.
+
+
+
 ## 6. Roles, habilidades y RACI
 (Las filas de umbral de decisión, umbrales del gate, brecha de equidad, rollback, cambio del contrato
 de datos y envío de datos a un LLM externo tienen el **A** que fija el contrato §9.2.)
