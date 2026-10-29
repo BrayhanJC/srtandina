@@ -204,10 +204,10 @@ Las acciones, disparadores, probabilidades, impactos y estados se documentan en 
 | | **Total** | | | | **139** | **52.3** |
 
 **Tallas:**
-    - **S** = 3 h 
-    - **M** = 6 h 
-    - **L** = 10 h 
-    - **XL** = 16 h. 
+- **S** = 3 h 
+- **M** = 6 h 
+- **L** = 10 h 
+- **XL** = 16 h. 
 
 **PERT:** Te = (O + 4·M + P) / 6 (ver tabla de estimación PERT).
 
@@ -226,11 +226,11 @@ Fórmula: **Te = (O + 4·M + P) / 6**
 
 | Id | Historia | Reto | O (h) | M (h) | P (h) | Cálculo | Te (h) |
 |----|----------|------|------:|------:|------:|---------|-------:|
-| HU-07 ⚙️ | Ningún cambio llega a main sin pruebas y quality gate | 04 | 4 | 8 | 16 | (4 + 4·8 + 16) / 6 = (4 + 32 + 16) / 6 = 52 / 6 | **8.7** |
-| HU-08 ⚙️ | Lista de clientes en riesgo cada lunes a las 07:00 | 04 | 3 | 6 | 12 | (3 + 4·6 + 12) / 6 = (3 + 24 + 12) / 6 = 39 / 6 | **6.5** |
-| HU-09 ⚙️ | Consultar el riesgo de un cliente en menos de 1 s | 05 | 4 | 8 | 16 | (4 + 4·8 + 16) / 6 = (4 + 32 + 16) / 6 = 52 / 6 | **8.7** |
-| HU-10 ⚙️ | Reporte de drift de cada lote | 05 | 4 | 8 | 14 | (4 + 4·8 + 14) / 6 = (4 + 32 + 14) / 6 = 50 / 6 | **8.3** |
-| HU-11 ⚙️ | Volver a la versión anterior en menos de 30 min | 03, 05 | 4 | 8 | 18 | (4 + 4·8 + 18) / 6 = (4 + 32 + 18) / 6 = 54 / 6 | **9.0** |
+| HU-07 ⚙️ | Como Líder, quiero que ningún cambio llegue a main sin pasar pruebas y quality gate, para no degradar producción | 04 | 4 | 8 | 16 | (4 + 4·8 + 16) / 6 = (4 + 32 + 16) / 6 = 52 / 6 | **8.7** |
+| HU-08 ⚙️ | Como gerente comercial, quiero la lista de clientes en riesgo cada lunes a las 07:00, para planear la campaña | 04 | 3 | 6 | 12 | (3 + 4·6 + 12) / 6 = (3 + 24 + 12) / 6 = 39 / 6 | **6.5** |
+| HU-09 ⚙️ | Como agente, quiero consultar el riesgo de un cliente en menos de un segundo, para usarlo durante la llamada | 05 | 4 | 8 | 16 | (4 + 4·8 + 16) / 6 = (4 + 32 + 16) / 6 = 52 / 6 | **8.7** |
+| HU-10 ⚙️ | Como responsable del modelo, quiero un reporte de drift de cada lote, para decidir si reentrenar | 05 | 4 | 8 | 14 | (4 + 4·8 + 14) / 6 = (4 + 32 + 14) / 6 = 50 / 6 | **8.3** |
+| HU-11 ⚙️ | Como sponsor, quiero volver a la versión anterior en menos de 30 minutos, para limitar el daño de una mala promoción | 03, 05 | 4 | 8 | 18 | (4 + 4·8 + 18) / 6 = (4 + 32 + 18) / 6 = 54 / 6 | **9.0** |
 | HU-16 ⚙️ | Un cambio de prompt solo se publica si pasa su evaluación | 07 | 3 | 6 | 14 | (3 + 4·6 + 14) / 6 = (3 + 24 + 14) / 6 = 41 / 6 | **6.8** |
 | HU-17 ⚙️ | Comunicado claro y post-mortem sin culpables | 05, S8 | 2 | 4 | 8 | (2 + 4·4 + 8) / 6 = (2 + 16 + 8) / 6 = 26 / 6 | **4.3** |
 | | **Total** | | **24** | **48** | **98** | | **52.3** |
