@@ -179,6 +179,55 @@ Las acciones, disparadores, probabilidades, impactos y estados se documentan en 
 
 ## 7. Backlog estimado, Definición de Terminado y cronograma
 
+### 7.1. Resumen Historia de Usuario
+
+| Id | Historia | Prioridad | Fase CRISP-ML(Q) | Talla | Estimación (h) | PERT Te (h) |
+|----|----------|-----------|------------------|-------|----------------|-------------|
+| HU-01 | Decisión que cambia el SRT y su valor | Alta | Comprensión del negocio y los datos | M | 6 | |
+| HU-02 | Quién aprueba umbrales, equidad y rollback | Alta | Comprensión del negocio y los datos | S | 3 | |
+| HU-03 | Pipeline se detiene con datos inválidos | Alta | Ingeniería de datos | L | 10 | |
+| HU-04 | Excluir fuga de información | Alta | Ingeniería de datos | L | 10 | |
+| HU-05 | Reconstruir el modelo de cualquier tag | Alta | Ingeniería del modelo | M | 6 | |
+| HU-06 | Comparar al menos tres corridas | Media | Ingeniería del modelo | L | 10 | |
+| HU-07 ⚙️ | Nada llega a main sin pruebas y gate | Alta | Evaluación | L | 10 | 8.7 |
+| HU-08 ⚙️ | Lista de riesgo cada lunes 07:00 | Alta | Despliegue | M | 6 | 6.5 |
+| HU-09 ⚙️ | Consultar riesgo en < 1 s | Media | Despliegue | L | 10 | 8.7 |
+| HU-10 ⚙️ | Reporte de drift por lote | Alta | Monitoreo y mantenimiento | L | 10 | 8.3 |
+| HU-11 ⚙️ | Rollback en < 30 min | Alta | Monitoreo y mantenimiento | L | 10 | 9.0 |
+| HU-12 | Ahorro estimado vs. llamar al azar | Alta | Evaluación | L | 10 | |
+| HU-13 | Brecha de recall entre grupos | Alta | Evaluación | L | 10 | |
+| HU-14 | Model card con evidencia | Media | Evaluación | L | 10 | |
+| HU-15 | Explicación breve del riesgo (LLM) | Media | Despliegue | M | 6 | |
+| HU-16 ⚙️ | Prompt solo se publica si pasa evaluación | Media | Monitoreo y mantenimiento | M | 6 | 6.8 |
+| HU-17 ⚙️ | Comunicado y post-mortem sin culpables | Alta | Monitoreo y mantenimiento | S | 3 | 4.3 |
+| SPIKE | ¿Ollama qwen3:4b < 20 s en nuestros equipos? | Alta | Comprensión del negocio y los datos | S | 3 | |
+| | **Total** | | | | **139** | **52.3** |
+
+Tallas: S = 3 h · M = 6 h · L = 10 h · XL = 16 h. PERT: Te = (O + 4·M + P) / 6 (ver tabla de estimación PERT).
+**Total comprometido** (Estimación de las historias normales y el spike + PERT de las ⚙️): 84 + 52.3 = **≈136.3 h**.
+
+### 7.2 Estimación PERT — historias de usuario ⚙️
+
+Fórmula: **Te = (O + 4·M + P) / 6**
+
+- **O (optimista):** horas si todo sale bien a la primera.
+- **M (más probable):** horas en un caso normal, con algún tropiezo. Pesa 4.
+- **P (pesimista):** horas si casi todo sale mal, sin llegar a una catástrofe.
+- Se divide entre 6 porque los pesos suman 1 + 4 + 1 = 6 (promedio ponderado).
+
+#### Tabla de estimación
+
+| Id | Historia | Reto | O (h) | M (h) | P (h) | Cálculo | Te (h) |
+|----|----------|------|------:|------:|------:|---------|-------:|
+| HU-07 ⚙️ | Ningún cambio llega a main sin pruebas y quality gate | 04 | 4 | 8 | 16 | (4 + 4·8 + 16) / 6 = (4 + 32 + 16) / 6 = 52 / 6 | **8.7** |
+| HU-08 ⚙️ | Lista de clientes en riesgo cada lunes a las 07:00 | 04 | 3 | 6 | 12 | (3 + 4·6 + 12) / 6 = (3 + 24 + 12) / 6 = 39 / 6 | **6.5** |
+| HU-09 ⚙️ | Consultar el riesgo de un cliente en menos de 1 s | 05 | 4 | 8 | 16 | (4 + 4·8 + 16) / 6 = (4 + 32 + 16) / 6 = 52 / 6 | **8.7** |
+| HU-10 ⚙️ | Reporte de drift de cada lote | 05 | 4 | 8 | 14 | (4 + 4·8 + 14) / 6 = (4 + 32 + 14) / 6 = 50 / 6 | **8.3** |
+| HU-11 ⚙️ | Volver a la versión anterior en menos de 30 min | 03, 05 | 4 | 8 | 18 | (4 + 4·8 + 18) / 6 = (4 + 32 + 18) / 6 = 54 / 6 | **9.0** |
+| HU-16 ⚙️ | Un cambio de prompt solo se publica si pasa su evaluación | 07 | 3 | 6 | 14 | (3 + 4·6 + 14) / 6 = (3 + 24 + 14) / 6 = 41 / 6 | **6.8** |
+| HU-17 ⚙️ | Comunicado claro y post-mortem sin culpables | 05, S8 | 2 | 4 | 8 | (2 + 4·4 + 8) / 6 = (2 + 16 + 8) / 6 = 26 / 6 | **4.3** |
+| | **Total** | | **24** | **48** | **98** | | **52.3** |
+
 ### 7.1. Marco de gestión
 
 Se adopta un marco híbrido Kanban + CRISP-ML(Q), considerando la disponibilidad parcial del equipo, las dependencias técnicas y las fechas de entrega del curso. Cada iteración corresponde al ciclo de planificación, ejecución y revisión de los retos asignados a un FDS. Se conserva una reunión inicial de planificación, seguimiento asincrónico mediante GitHub Projects y revisión previa a cada entrega. Entre fines de semana, las tareas se coordinan mediante el tablero y pull requests, notificando oportunamente los bloqueos de infraestructura, conocimiento o tiempo.
