@@ -203,7 +203,14 @@ Las acciones, disparadores, probabilidades, impactos y estados se documentan en 
 | SPIKE | ¿Ollama qwen3:4b < 20 s en nuestros equipos? | Alta | Comprensión del negocio y los datos | S | 3 | |
 | | **Total** | | | | **139** | **52.3** |
 
-Tallas: S = 3 h · M = 6 h · L = 10 h · XL = 16 h. PERT: Te = (O + 4·M + P) / 6 (ver tabla de estimación PERT).
+**Tallas:**
+    - **S** = 3 h 
+    - **M** = 6 h 
+    - **L** = 10 h 
+    - **XL** = 16 h. 
+
+**PERT:** Te = (O + 4·M + P) / 6 (ver tabla de estimación PERT).
+
 **Total comprometido** (Estimación de las historias normales y el spike + PERT de las ⚙️): 84 + 52.3 = **≈136.3 h**.
 
 ### 7.2 Estimación PERT — historias de usuario ⚙️
