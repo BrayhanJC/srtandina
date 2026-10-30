@@ -74,6 +74,7 @@ Llamar a un cliente tiene valor esperado positivo si su probabilidad de deserci�
 | Negocio (estimado) | `net_savings_vs_random` (ahorro frente a llamar al azar, Contrato §13) | 39 325.89 miles de COP · `metrics.json`, (provisional) | > 0 | `metrics.json` |
 | Operación | Lista disponible el lunes a las 07:00 | Sin procedimiento (hoy se arma a mano) | 100 % de las semanas (Contrato §5) | Hora del archivo de la lista |
 | Gestión | Tags `rNN` publicados a tiempo | — (primer reto) | 100 % antes de la fecha límite (Contrato §6.2) | Fecha del tag en GitHub |
+| Gestión | Tiempo de rollback desde la decisión hasta que `/health` informa la versión de `@previous` (HU-11) | Sin procedimiento | < 30 min | Ensayo cronometrado del Reto 05 |
 
 ## 5. Alcance y nivel de madurez MLOps objetivo
 
@@ -252,17 +253,30 @@ Se adopta un marco híbrido Kanban + CRISP-ML(Q), considerando la disponibilidad
 ### 7.3. Cronograma por fin de semana
 
 | FDS | Reto | Responsable (R) | Tag y fecha límite |
-|---|---|---|---|
-| 2 | 02 — Gobierno y contrato de datos | Juan Camilo Zuluaga Serna (DS/Steward) | `r02` — FDS 2 + 7 días |
-| 2 | 03 — Reproducibilidad y versionado | Brayhan Andrés Jaramillo Castaño (MLOps) | `r03` — FDS 2 + 7 días |
-| 3 | 04 — Pruebas e integración continua | Brayhan Andrés Jaramillo Castaño (MLOps) | `r04` — FDS 3 + 7 días |
-| 3 | 05 — Despliegue, monitoreo y operación | Brayhan Andrés Jaramillo Castaño (MLOps) | `r05` — FDS 3 + 7 días |
-| 4 | 06 — Impacto, equidad y gobernanza | Juan Camilo Zuluaga Serna (DS/Steward) | `r06` — Inicio S8 |
-| 4 | 07 — Asistente de explicación con LLM | Juan Camilo Zuluaga Serna (DS/Steward), con apoyo MLOps | `r07` — Inicio S8 |
-| S8 | Proyecto Final — Simulacro y defensa | Jorge Andrés Ángel (Líder/PO), con participación del equipo | `final` — S8, según horario acordado |
+|-----|------|-----------------|--------------------|
+| 2 | 02 – Gobierno y contrato de datos | Juan Camilo Zuluaga (DS/Steward) | r02 · [fecha §6.2] |
+| 2 | 03 – Reproducibilidad y versionado | Brayhan Jaramillo (MLOps) | r03 · [fecha §6.2] |
+| 3 | 04 – Pruebas e integración continua | Jorge Andrés Ángel (Líder/PO, secundario MLOps) | r04 · [fecha §6.2] |
+| 3 | 05 – Despliegue, monitoreo y operación | Brayhan Jaramillo (MLOps) | r05 · [fecha §6.2] |
+| 4 | 06 – Impacto, equidad y gobernanza | Juan Camilo Zuluaga (DS/Steward) | r06 · [fecha §6.2] |
+| 4 | 07 – Asistente de explicación con LLM | Jorge Andrés Ángel (Líder/PO) | r07 · [fecha §6.2] |
+| 4 | Proyecto Final (simulacro y defensa) | Jorge Andrés Ángel (Líder/PO) | final · [fecha §6.2] |
+
+El responsable (R) coordina y entrega el reto; todos los integrantes trabajan en él según el tablero.
 
 Las asignaciones de responsabilidad se revisarán frente a la capacidad real del equipo y las dependencias de cada historia. Las fechas definitivas se completarán cuando se confirme el calendario académico.
 
 
 ## 8. Riesgos principales
+
 Los cinco riesgos de mayor exposición. El registro completo y vivo está en [`riesgos.md`](riesgos.md).
+
+| Id | Categoría | Riesgo | P | I | Exposición | Responsable |
+|----|-----------|--------|---|---|------------|-------------|
+| R-01 | operación | Infraestructura insuficiente para MLOps, monitoreo y LLM | 4 | 5 | 20 | MLOps |
+| R-03 | gestión | Tiempo disponible menor que el backlog comprometido | 5 | 4 | 20 | Líder/PO |
+| R-02 | gestión | Habilidad más débil: despliegue y operación de servicios | 4 | 4 | 16 | Líder/PO |
+| R-04 | datos | Lote que viola una regla bloqueante del contrato | 4 | 4 | 16 | DS/Steward |
+| R-05 | modelo | Clase minoritaria: el modelo no supera gate.recall | 4 | 4 | 16 | DS/Steward |
+
+Registro completo: [docs/riesgos.md](riesgos.md)
