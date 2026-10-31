@@ -46,13 +46,13 @@ Hoy los agentes eligen con tres reglas informales: "los que se quejaron", "los d
 
 Llamar a un cliente tiene valor esperado positivo si su probabilidad de deserción supera el **13 %**.
 
-**Qué restricción manda: la capacidad.** En el conjunto de prueba (1 400 clientes), **834** tienen probabilidad ≥ p*, y la capacidad es de **400** llamadas, el 28.6 % del lote. Hay más del doble de clientes que valdría la pena llamar de los que caben. La probabilidad del cliente número 400 de la lista es ≈ 0.39, muy por encima de p*. En V4, la restricción económica no es la que limita. Esto sirve como argumento para pedir más capacidad o para justificar que el umbral quede alrededor de 0.39 y no de 0.13.
+**Qué restricción manda: la capacidad.** En el conjunto de prueba (1 400 clientes), **834** tienen probabilidad ≥ p*, y la capacidad es de **400** llamadas, el 28.6 % del lote. Hay más del doble de clientes que valdría la pena llamar de los que caben. La probabilidad del cliente número 400 de la lista es ≈ 0.39, muy por encima de p*. En V4, la restricción económica no es la que limita. Esto sirve como argumento para evaluar una ampliación de capacidad o para proponer al Sponsor un umbral operativo; **0.39 es una referencia del lote, no un umbral aprobado**.
 
 
 ## 3 ML Canvas (razonamiento de cada bloque)
 | Bloque | Canónico (resumen en una línea) | Por qué está así | Qué se rompería si fuera distinto | Adaptación a la variante (V4 – Hogar fibra premium) |
 |---|---|---|---|---|
-| 1 Propuesta de valor | Lista semanal priorizada y explicada que reemplaza las tres reglas informales | §1 del contrato etiqueta 2 y 3 | Si se entrega solo una probabilidad, el agente no sabe qué hacer con ella y sigue con las reglas informales; el asistente de explicación del Reto 07 pierde su razón de ser | Cliente de alto valor (900) y llamada cara (35): cada llamada desperdiciada y cada desertor no detectado cuestan más que en otros segmentos |
+| 1 Propuesta de valor | Lista semanal priorizada y explicada que reemplaza las tres reglas informales | Contrato §1: priorización y explicación por cliente; los resultados deben apoyar una decisión de contacto | Si se entrega solo una probabilidad, el agente no sabe qué hacer con ella y sigue con las reglas informales; el asistente de explicación del Reto 07 pierde su razón de ser | Cliente de alto valor (900) y llamada cara (35): cada llamada desperdiciada y cada desertor no detectado cuestan más que en otros segmentos |
 | 2 Tarea de predicción | Clasificación binaria: probabilidad de `churn = 1` en 30 días | §2.1: `churn` "se conoce 30 días después"; §3: EN_RIESGO resulta de aplicar umbral y capacidad a una probabilidad | Con salida 0/1 no se puede ordenar ni cortar la lista en la capacidad (Reto 04); con horizonte de 90 días el monitoreo de desempeño del Reto 05 queda tres meses ciego | No cambia: la tarea y los datos son los mismos para todas las variantes (§11) |
 | 3 Decisiones | Llamar en orden descendente desde `model.decision_threshold` hasta la capacidad semanal | §1: capacidad limitada; §9.2: el umbral lo aprueba el Sponsor; §5: la lista va "hasta business.weekly_capacity" | Sin tope, la lista del lunes del Reto 04 tendría 834 clientes sobre p* y el call center solo atiende 400; si el umbral lo fija el Data Scientist se viola §9.2 | Capacidad 400 = 28.6 % de un lote de 1 400. p* = 35 / (0.30 × 900) = 0.13, muy por debajo del cliente nº 400 (p ≈ 0.39): manda la capacidad |
 | 4 Haciendo predicciones | Batch el lunes (06:00 lote, 07:00 lista) + API `/predict` en línea, p95 < 300 ms | §5: scoring y lista los lunes; "Diario (continuo): servicio en línea para consultas del call center" | Solo batch: el agente no puede consultar a un cliente que llama a mitad de semana (Reto 05). Solo en línea: nadie arma la lista semanal (Reto 04) | ~400 llamadas/semana ≈ 80 por día hábil: carga baja para la API; el SLO no cambia |
@@ -163,7 +163,7 @@ Para V4 se prioriza un sistema reproducible, probado y monitoreado, con automati
 | Promoción a @champion | I | **A** | C | R |  |  |
 | Despliegue y monitoreo |  | I | C | A/R |  |  |
 | Rollback ante incidente | I | **A** | I | R |  |  |
-| Envío de datos a un proveedor de LLM externo | **A** | C | C | R | C | C |
+| Envío de datos a un proveedor de LLM externo | **A** | I | C | R | C | C |
 | Model card y comunicación de resultados | I | **A** | R | C | I | I |
 
 ### 6.3. Gestión de los riesgos del equipo
@@ -175,7 +175,7 @@ El Líder / PO coordinará la planificación y el seguimiento de sus respuestas;
 Las acciones, disparadores, probabilidades, impactos y estados se documentan en [Registro de riesgos](riesgos.md).
 
 
-**Nota ¹:** Los umbrales `gate.*` tienen como A al Líder/PO, pero requieren aprobación del Comité (Contrato §9.2). En la fila «Envío de datos a un proveedor de LLM externo», se mantiene al Líder/PO como consultado; la comunicación al equipo se documentará en el registro de decisiones.
+**Nota ¹:** Los umbrales `gate.*` tienen como A al Líder/PO, pero requieren aprobación del Comité (Contrato §9.2). En la fila «Envío de datos a un proveedor de LLM externo», el Sponsor autoriza (A), MLOps ejecuta (R) y el Líder/PO es informado (I); DS/Steward, Dueño del dato y Comité son consultados (C). No se transmitirán datos sin aprobación del Sponsor.
 
 ## 7. Backlog estimado, Definición de Terminado y cronograma
 
@@ -206,7 +206,7 @@ El tablero GitHub Projects muestra **HU-01 a HU-17**, todas en estado `Backlog`,
 
 **Escala de tallas:** S = 3 h; M = 6 h; L = 10 h; XL = 16 h. **Spike de investigación adicional:** 3 h; no aparece en las 129 h ni está verificado como tarjeta del tablero.
 
-**Tablero:** [agregar aquí la URL específica de GitHub Projects]. Repositorio: https://github.com/BrayhanJC/srtandina.
+**Tablero GitHub Projects:** **[PENDIENTE: pegar la URL específica del tablero]**. Repositorio: https://github.com/BrayhanJC/srtandina. El enlace del repositorio no sustituye el del tablero.
 
 ### 7.2. PERT para las siete historias operativas
 
@@ -227,7 +227,7 @@ Se conserva la estimación de tres puntos del equipo, que representa un cálculo
 
 ### 7.3. Capacidad y compromiso
 
-La declaración del equipo de **12, 8 y 8 horas por semana** equivale a 28 h brutas semanales. Los totales suministrados de 96/64/64 h presuponen **8 semanas**; este horizonte debe confirmarse como semanas efectivamente disponibles hasta S8.
+La declaración del equipo de **12, 8 y 8 horas por semana** equivale a 28 h brutas semanales. Los totales suministrados de 96/64/64 h equivalen a **8 semanas de referencia**, pero **no se ha confirmado que sean ocho semanas efectivamente restantes hasta S8**. La capacidad siguiente es, por tanto, un escenario condicionado; debe recalcularse si el período disponible difiere.
 
 | Integrante | h/semana | Semanas asumidas | Horas brutas | Enfoque | Capacidad efectiva |
 |---|---:|---:|---:|---:|---:|
@@ -242,7 +242,7 @@ La declaración del equipo de **12, 8 y 8 horas por semana** equivale a 28 h bru
 - **Compromiso de planificación (PERT + spike):** 136,33 h.
 - **Holgura condicionada:** 10,47 h (`146,80 − 136,33`).
 
-**Decisión condicionada:** con ocho semanas disponibles y una reserva aprobada de 10 h, el compromiso cabe por 10,47 h. Si el horizonte es menor o se materializan los riesgos R-01 a R-03, se recalcula la capacidad y se documenta cualquier redistribución o recorte de **extensiones opcionales**, sin eliminar las 17 historias canónicas por decisión unilateral. La comparación y su aprobación deben quedar registradas en `docs/decision_log.md`.
+**Resultado condicionado de PS-2:** si el equipo confirma ocho semanas efectivas y aprueba la reserva de 10 h, la capacidad neta sería **146,80 h** y cubriría las **136,33 h** comprometidas, con **10,47 h de holgura**. **No debe presentarse aún como capacidad aprobada.** Si quedan menos semanas o se materializan R-01 a R-03, se recalculará la capacidad, se reasignarán tareas y se registrará cualquier recorte de extensiones opcionales, sin suprimir unilateralmente las 17 HU canónicas. El acuerdo definitivo deberá fecharse en `docs/decision_log.md` y reflejarse también en `docs/bitacora/reto-01.md`.
 
 ### 7.4. Spike de investigación
 
@@ -285,7 +285,7 @@ No se inventan fechas calendario: se consignan los plazos relativos del Contrato
 
 ### 7.8. Historia de mayor incertidumbre
 
-**HU-11 — Rollback en menos de 30 minutos** se propone como historia peor estimada: GitHub le asigna **S = 3 h**, mientras PERT estima **9 h** (O = 4, M = 8, P = 18), una desviación de **+6 h** frente a la talla. La falta de experiencia operativa y la infraestructura limitada pueden ampliar el esfuerzo (R-01 y R-02). Se propone dividirla en preparación de aliases y runbook, prueba de recuperación y ensayo de `/health`; MLOps y Líder/PO trabajarán en pareja en caso de bloqueo. **La elección debe ratificarse en `docs/decision_log.md`** y el resultado real se comprobará en el Reto 05.
+**HU-11 — Rollback en menos de 30 minutos** se propone como historia peor estimada: GitHub le asigna **S = 3 h**, mientras PERT estima **9 h** (O = 4, M = 8, P = 18), una desviación de **+6 h** frente a la talla. La falta de experiencia operativa y la infraestructura limitada pueden ampliar el esfuerzo (R-01 y R-02). Se propone dividirla en preparación de aliases y runbook, prueba de recuperación y ensayo de `/health`; MLOps y Líder/PO trabajarán en pareja en caso de bloqueo. **La elección debe ratificarse en `docs/decision_log.md`** con fecha, alternativas y evidencia; el resultado real se comprobará en el Reto 05.
 
 ## 8. Riesgos principales
 
