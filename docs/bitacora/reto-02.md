@@ -9,10 +9,10 @@
 Sobre el extracto crudo, el contrato canónico de la plantilla (`training_schema`) falló en 7 reglas. Detectó los defectos de dominio, rango, nulos y unicidad de las columnas canónicas. Estos son los que no detectó:
 
 1. **RC-3, sin internet con cargo mayor a 60: 17 filas (0.24 %).** La plantilla no tiene esa regla entre columnas, así que esos clientes pasarían como válidos.
-2. **`fecha_alta` posterior al corte (2026-11-15): 20 filas (0.28 %).** El contrato rechaza la columna completa por estar fuera de la §2.1 (RC-5), pero no mira su contenido.
+2. **`fecha_alta` posterior al corte (2026-11-15): 20 filas (0.28 %).** El contrato rechaza la columna completa por estar fuera del modelo canónico (Contrato §2.1) (RC-5), pero no mira su contenido.
 3. **`fecha_alta` vacía: 28 filas (0.40 %).** Solo aparecen porque esas mismas filas tienen `tenure_months = -1`.
 4. **El tipo de duplicado.** El contrato reporta 84 filas con `customer_id` repetido. No distingue las 21 copias exactas de los 21 clientes que tienen dos cargos mensuales distintos, y esa diferencia cambia el tratamiento.
-5. **La fuga.** El contrato rechaza `oferta_retencion_aceptada` por estar fuera del esquema, no porque tenga fuga. Si alguien la agregara al modelo canónico, ninguna regla la detendría.
+5. **Nota sobre `oferta_retencion_aceptada`.** El contrato canónico sí la detiene: RC-5 (Contrato §2.2) es la regla de minimización y fuga, y con `strict=True` rechaza las cuatro columnas no canónicas. Lo que el contrato no puede hacer es decir por qué cada una queda fuera. Eso lo justifica el equipo (Contrato §2.3) en `docs/datos_gobernanza.md`.
 
 El contrato v2 debe cerrar esta brecha. RC-3 bloquea (en `training_schema` y `features_schema`). Las reglas sobre `fecha_alta` van a `crm_warnings.py` como advertencias, porque `fecha_alta` no es una columna canónica. La regla de descarte máximo evita que la limpieza esconda un lote corrupto.
 
