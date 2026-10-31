@@ -39,7 +39,16 @@ Copia fiel de la *Ficha técnica del extracto CRM-RET* entregada por el dueño d
 | 12 | `fecha_corte` | fecha AAAA-MM-DD | Fecha de corte del extracto | 2026-09-30 en todo el archivo |
 | 13 | `oferta_retencion_aceptada` | entero | Resultado de la última oferta de retención registrada en el CRM | 0, 1 |
 
-## 2. Diagnóstico de calidad
+> Esta ficha es la documentación oficial del extracto. Se entrega junto con el archivo `crm_extracto_<equipo>.csv` y describe lo que el sistema de origen debería contener. Las consultas sobre su contenido se dirigen al dueño del dato (mesa de datos CRM).
+
+**Archivo recibido:** `crm_extracto_v4.csv` (variante V4), copiado como `data/raw/crm_extracto.csv` y registrado con DVC (`data/raw/crm_extracto.csv.dvc`, md5 `17bca792551fe4a92d2995ad9ec06827`, 657 548 bytes). No está en el historial de Git.
+
+## 2. Perfil de calidad y brecha con el contrato
+
+Extracto `data/raw/crm_extracto.csv` (V4): **7 042 filas · 13 columnas**. Los porcentajes se calculan sobre las 7 042 filas. Las reglas salen de la ficha técnica (§1). Para las nueve columnas canónicas, los dominios y rangos de la ficha coinciden con los del Contrato §2.1. Para el conteo se leyó el CSV como texto, así que una celda vacía cuenta como nulo.
+
+### 2.1 Perfil (cuatro dimensiones)
+
 | Dimensión | Regla verificada | Resultado (filas y %) | Acción |
 |---|---|---|---|
 | Completitud | Ninguna columna admite vacíos (ficha, "Completitud") | `monthly_charges`: 56 vacíos (0.80 %). `fecha_alta`: 28 vacíos (0.40 %). Las otras 11 columnas: 0 vacíos | Negociar con el dueño (§4.3) |
@@ -71,6 +80,22 @@ $ uv run python -m scripts.validar_contrato v2 data/raw/crm_extracto.csv
            support_tickets                                   in_range(0, 50)               13                                                         99
 (entre columnas / esquema)                                  column_in_schema                4 region, fecha_alta, fecha_corte, oferta_retencion_aceptada
 ```
+Código de salida: 1.
+
+| Defecto del perfil | Filas | ¿Lo detecta el contrato canónico? |
+|---|---|---|
+| `contract_type` = `Month-to-month` | 194 | Sí (RC-2) |
+| `customer_id` repetido | 84 (42 sobrantes) | Sí (RC-1), pero no distingue las 21 copias exactas de los 21 casos con dos cargos distintos |
+| `payment_method` = `tarjeta_debito` | 81 | Sí (RC-2) |
+| `monthly_charges` vacío | 56 | Sí (RC-2, sin nulos) |
+| `tenure_months` = -1 | 28 | Sí (RC-2) |
+| `support_tickets` = 99 | 13 | Sí (RC-2) |
+| **Sin internet con cargo > 60 (RC-3)** | **17** | **No**: la plantilla no trae RC-3 |
+| **`fecha_alta` posterior al corte** | **20** | **No**: rechaza la columna completa por estar fuera del modelo canónico (Contrato §2.1) (RC-5), pero no revisa su contenido |
+| **`fecha_alta` vacía** | **28** | **No** directamente: esas filas solo fallan por `tenure_months = -1` |
+| Columnas fuera del modelo canónico (`region`, `fecha_alta`, `fecha_corte`, `oferta_retencion_aceptada`) | 4 columnas | Sí (RC-5, `strict=True`). RC-5 es la regla de minimización y fuga del contrato (Contrato §2.2). Por qué queda fuera cada columna lo justifica el equipo (Contrato §2.3), en las §3 y §5 de este documento |
+| Tasa de churn (RC-4) | 27.38 % (1 928 de 7 042) | Pasa: está entre 0.05 y 0.60 y dentro del 25–30 % de la ficha |
+
 ### 2.3 ¿Se conoce el lunes a las 06:00, cuando se puntúa el lote? (contrato §5)
 
 | Columna | ¿Se conoce el lunes 06:00? | Razón |
@@ -83,7 +108,7 @@ $ uv run python -m scripts.validar_contrato v2 data/raw/crm_extracto.csv
 | `monthly_charges` | Sí | Cargo facturado del plan vigente |
 | `support_tickets` | Sí | Tickets de los 90 días anteriores al corte |
 | `senior_citizen` | Sí | Sale de la fecha de nacimiento registrada |
-| `churn` | **No** | Es la etiqueta: se conoce 30 días después del corte. No viene en el lote (`features_schema` no la incluye) |
+| `churn` | **No** | Es la etiqueta: se conoce 30 días después (Contrato §2.1). No viene en el lote (`features_schema` no la incluye) |
 | `region` | Sí | Dirección de instalación |
 | `fecha_alta` | Sí | Fecha de activación |
 | `fecha_corte` | Sí | Es la fecha del extracto |
