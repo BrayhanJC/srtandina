@@ -48,6 +48,20 @@ Copia fiel de la *Ficha técnica del extracto CRM-RET* entregada por el dueño d
 | Unicidad | | | |
 | Actualidad | | | |
 
+### 2.1 Resumen
+
+## ❌ 7 reglas incumplidas
+
+| Columna | Regla | Filas afectadas | Ejemplos |
+|---|---|---:|---|
+| `contract_type` | `isin(['month-to-month', 'one-year', 'two-year'])` | 194 | `Month-to-month` |
+| `customer_id` | `field_uniqueness` | 84 | — |
+| `payment_method` | `isin(['electronic_check', 'mailed_check', 'bank_transfer', ...])` | 81 | `tarjeta_debito` |
+| `monthly_charges` | `not_nullable` | 56 | `NaN` |
+| `tenure_months` | `in_range(0, 72)` | 28 | `-1` |
+| `support_tickets` | `in_range(0, 50)` | 13 | `99` |
+| *(Entre columnas / esquema)* | `column_in_schema` | 4 | `region`, `fecha_alta`, `fecha_corte`, `oferta_retencion_aceptada` |
+
 ## 3. Hallazgos del EDA
 
 ## 4. Contrato de datos
