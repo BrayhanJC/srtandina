@@ -72,7 +72,8 @@ def main() -> int:
         schema = getattr(importlib.import_module(modulo), esquema)
     except (ModuleNotFoundError, AttributeError):
         print(
-            f"No se encontró {esquema} en {modulo.replace('.', '/')}.py: créelo antes de validar con '{nombre}'."
+            f"No se encontró {esquema} en {modulo.replace('.', '/')}.py: "
+            f"créelo antes de validar con '{nombre}'."
         )
         return 2
     df = pd.read_csv(ruta)
