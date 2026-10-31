@@ -40,27 +40,37 @@ Copia fiel de la *Ficha técnica del extracto CRM-RET* entregada por el dueño d
 | 13 | `oferta_retencion_aceptada` | entero | Resultado de la última oferta de retención registrada en el CRM | 0, 1 |
 
 ## 2. Diagnóstico de calidad
-| Dimensión | Regla verificada | Resultado | Acción |
+| Dimensión | Regla verificada | Resultado (filas y %) | Acción |
 |---|---|---|---|
-| Completitud | | | |
-| Validez | | | |
-| Consistencia | | | |
-| Unicidad | | | |
-| Actualidad | | | |
+| Completitud | Ninguna columna admite vacíos (ficha, "Completitud") | `monthly_charges`: 56 vacíos (0.80 %). `fecha_alta`: 28 vacíos (0.40 %). Las otras 11 columnas: 0 vacíos | Negociar con el dueño (§4.3) |
+| Validez | `contract_type` ∈ {`month-to-month`, `one-year`, `two-year`} en minúscula | 194 filas (2.75 %) con `Month-to-month` (mayúscula inicial) | Negociar (§4.3) |
+| Validez | `payment_method` ∈ {`electronic_check`, `mailed_check`, `bank_transfer`, `credit_card`} | 81 filas (1.15 %) con `tarjeta_debito`, un valor que no está en la ficha | Negociar (§4.3) |
+| Validez | `tenure_months` entre 0 y 72 | 28 filas (0.40 %) con `-1`. Son las mismas 28 filas que tienen `fecha_alta` vacía | Negociar (§4.3) |
+| Validez | `support_tickets` entre 0 y 50 | 13 filas (0.18 %) con `99` | Negociar (§4.3) |
+| Validez | `internet_service`, `senior_citizen`, `churn`, `region`, `oferta_retencion_aceptada` en su dominio; `monthly_charges` entre 0 y 500; `customer_id` con formato CNNNN-NNNNNN; fechas en formato AAAA-MM-DD; `fecha_corte` = 2026-09-30 | 0 filas fuera del dominio. `monthly_charges` va de 18.0 a 128.27 | Ninguna |
+| Unicidad | Una fila por cliente; `customer_id` único (ficha, "Granularidad") | 42 `customer_id` aparecen 2 veces: 84 filas (1.19 %) involucradas y 42 filas sobrantes (0.60 %). De esos 42: 21 son copias exactas y en los otros 21 las dos filas difieren solo en `monthly_charges` | Negociar (§4.3) |
+| Consistencia | RC-3: sin internet (`internet_service = none`) → `monthly_charges` ≤ 60 (ficha, tarifas vigentes) | 17 filas (0.24 %) con cargos entre 76.78 y 92.50 | Negociar (§4.3) |
+| Consistencia | `fecha_alta` ≤ `fecha_corte` (ficha) | 20 filas (0.28 %) con `fecha_alta` = 2026-11-15, posterior al corte | Negociar (§4.3) |
 
-### 2.1 Resumen
+En total hay **450 filas distintas (6.39 %) con al menos un defecto**. Solo dos se solapan: las 28 filas con `tenure_months = -1` son las mismas de `fecha_alta` vacía, y una fila sobrante de un duplicado también tiene `Month-to-month`.
 
-## ❌ 7 reglas incumplidas
+### 2.2 Brecha: contrato canónico de la plantilla sobre el extracto crudo
 
-| Columna | Regla | Filas afectadas | Ejemplos |
-|---|---|---:|---|
-| `contract_type` | `isin(['month-to-month', 'one-year', 'two-year'])` | 194 | `Month-to-month` |
-| `customer_id` | `field_uniqueness` | 84 | — |
-| `payment_method` | `isin(['electronic_check', 'mailed_check', 'bank_transfer', ...])` | 81 | `tarjeta_debito` |
-| `monthly_charges` | `not_nullable` | 56 | `NaN` |
-| `tenure_months` | `in_range(0, 72)` | 28 | `-1` |
-| `support_tickets` | `in_range(0, 50)` | 13 | `99` |
-| *(Entre columnas / esquema)* | `column_in_schema` | 4 | `region`, `fecha_alta`, `fecha_corte`, `oferta_retencion_aceptada` |
+Este es el contrato que trae la plantilla (`training_schema`, antes de modificarlo):
+
+```
+$ uv run python -m scripts.validar_contrato v2 data/raw/crm_extracto.csv
+[v2] data/raw/crm_extracto.csv: 7042 filas · 13 columnas
+  ❌ 7 reglas incumplidas
+                   columna                                             regla  filas_afectadas                                                   ejemplos
+             contract_type  isin(['month-to-month', 'one-year', 'two-year'])              194                                             Month-to-month
+               customer_id                                  field_uniqueness               84
+            payment_method isin(['electronic_check', 'mailed_check', 'bank_t...               81                                             tarjeta_debito
+           monthly_charges                                      not_nullable               56                                                        nan
+             tenure_months                                   in_range(0, 72)               28                                                         -1
+           support_tickets                                   in_range(0, 50)               13                                                         99
+(entre columnas / esquema)                                  column_in_schema                4 region, fecha_alta, fecha_corte, oferta_retencion_aceptada
+```
 
 ## 3. Hallazgos del EDA
 
