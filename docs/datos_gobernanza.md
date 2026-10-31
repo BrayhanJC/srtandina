@@ -5,8 +5,6 @@ Fuente · licencia · tamaño · granularidad · diccionario de variables · var
 
 ## 1. Ficha técnica recibida
 
-Copia fiel de la *Ficha técnica del extracto CRM-RET* entregada por el dueño del dato junto con `crm_extracto_v4.csv`. Se conserva tal como se recibió, aunque los datos la contradigan (las diferencias se reportan en la §2).
-
 **Conecta Andina S.A. · Jefatura de CRM y Facturación**
 
 **Ficha técnica del extracto CRM-RET · corte 2026-09-30**
@@ -82,21 +80,22 @@ $ uv run python -m scripts.validar_contrato v2 data/raw/crm_extracto.csv
 ```
 Código de salida: 1.
 
-| Defecto del perfil | Filas | ¿Lo detecta el contrato canónico? |
-|---|---|---|
-| `contract_type` = `Month-to-month` | 194 | Sí (RC-2) |
-| `customer_id` repetido | 84 (42 sobrantes) | Sí (RC-1), pero no distingue las 21 copias exactas de los 21 casos con dos cargos distintos |
-| `payment_method` = `tarjeta_debito` | 81 | Sí (RC-2) |
-| `monthly_charges` vacío | 56 | Sí (RC-2, sin nulos) |
-| `tenure_months` = -1 | 28 | Sí (RC-2) |
-| `support_tickets` = 99 | 13 | Sí (RC-2) |
-| **Sin internet con cargo > 60 (RC-3)** | **17** | **No**: la plantilla no trae RC-3 |
-| **`fecha_alta` posterior al corte** | **20** | **No**: rechaza la columna completa por estar fuera del modelo canónico (Contrato §2.1) (RC-5), pero no revisa su contenido |
-| **`fecha_alta` vacía** | **28** | **No** directamente: esas filas solo fallan por `tenure_months = -1` |
-| Columnas fuera del modelo canónico (`region`, `fecha_alta`, `fecha_corte`, `oferta_retencion_aceptada`) | 4 columnas | Sí (RC-5, `strict=True`). RC-5 es la regla de minimización y fuga del contrato (Contrato §2.2). Por qué queda fuera cada columna lo justifica el equipo (Contrato §2.3), en las §3 y §5 de este documento |
-| Tasa de churn (RC-4) | 27.38 % (1 928 de 7 042) | Pasa: está entre 0.05 y 0.60 y dentro del 25–30 % de la ficha |
+**Columnas canónicas (Contrato §2.1):**
 
-### 2.3 ¿Se conoce el lunes a las 06:00, cuando se puntúa el lote? (contrato §5)
+| Defecto del perfil | Filas | Regla | ¿Lo detecta el contrato canónico? |
+|---|---|---|---|
+| `contract_type` = `Month-to-month` | 194 | RC-2 | Sí |
+| `customer_id` repetido | 84 (42 sobrantes) | RC-1 | Sí. No distingue 21 copias exactas de 21 con dos cargos distintos |
+| `payment_method` = `tarjeta_debito` | 81 | RC-2 | Sí |
+| `monthly_charges` vacío | 56 | RC-2 | Sí |
+| `tenure_months` = -1 | 28 | RC-2 | Sí |
+| `support_tickets` = 99 | 13 | RC-2 | Sí |
+| **Sin internet con cargo > 60** | **17** | **RC-3** | **No: la plantilla no implementa RC-3** |
+| Tasa de churn | 27.38 % (1 928 de 7 042) | RC-4 | Pasa (entre 0.05 y 0.60) |
+
+**Columnas no canónicas (Contrato §2.3):** el contrato canónico no revisa su contenido. Con RC-5 (`strict=True`) solo detecta que sobran las cuatro (`region`, `fecha_alta`, `fecha_corte`, `oferta_retencion_aceptada`). Por eso no ve `fecha_alta` vacía (28 filas) ni `fecha_alta` posterior al corte (20 filas). Esos dos defectos van a las advertencias del v2 (`contracts/crm_warnings.py`).
+
+### 2.3 ¿Se conoce el lunes a las 06:00, cuando se puntúa el lote? (Contrato §5)
 
 | Columna | ¿Se conoce el lunes 06:00? | Razón |
 |---|---|---|
