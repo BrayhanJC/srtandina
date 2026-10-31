@@ -71,6 +71,24 @@ $ uv run python -m scripts.validar_contrato v2 data/raw/crm_extracto.csv
            support_tickets                                   in_range(0, 50)               13                                                         99
 (entre columnas / esquema)                                  column_in_schema                4 region, fecha_alta, fecha_corte, oferta_retencion_aceptada
 ```
+### 2.3 ¿Se conoce el lunes a las 06:00, cuando se puntúa el lote? (contrato §5)
+
+| Columna | ¿Se conoce el lunes 06:00? | Razón |
+|---|---|---|
+| `customer_id` | Sí | Identificador del CRM. No es variable del modelo |
+| `tenure_months` | Sí | Se calcula a la fecha de corte |
+| `contract_type` | Sí | Contrato vigente al corte |
+| `internet_service` | Sí | Servicio contratado al corte |
+| `payment_method` | Sí | Medio de pago registrado al corte |
+| `monthly_charges` | Sí | Cargo facturado del plan vigente |
+| `support_tickets` | Sí | Tickets de los 90 días anteriores al corte |
+| `senior_citizen` | Sí | Sale de la fecha de nacimiento registrada |
+| `churn` | **No** | Es la etiqueta: se conoce 30 días después del corte. No viene en el lote (`features_schema` no la incluye) |
+| `region` | Sí | Dirección de instalación |
+| `fecha_alta` | Sí | Fecha de activación |
+| `fecha_corte` | Sí | Es la fecha del extracto |
+| `oferta_retencion_aceptada` | **No** | Es el resultado de la oferta de retención. Esa oferta se hace en la campaña, después de la lista del lunes. **Candidata a fuga (§3)** |
+
 
 ## 3. Hallazgos del EDA
 
