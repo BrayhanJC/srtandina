@@ -64,7 +64,7 @@ Llamar a un cliente tiene valor esperado positivo si su probabilidad de deserci�
 | 10 Monitoreo | Por lote: % en riesgo, drift y contrato; a T + 30: ROC-AUC del periodo; servicio: latencia y errores; negocio: retención y brecha de equidad | §5: el lunes 08:00 solo hay reporte de datos y el desempeño llega a T + 30; §8.1: niveles OK / ALERTA / CRÍTICO; §12 regla 3: "contrato antes de predecir" | Vigilar solo ROC-AUC deja 30 días ciegos; un lote con una columna renombrada se puntuaría y la lista saldría mal (Reto 05) | Se sigue `recall_gap_senior_citizen` frente a 0.10 desde el primer lote, porque en V4 ya parte por encima |
 
 
-**Bloque peor justificado y por qué** ("todos están bien justificados" no cuenta):
+**Bloque con mayor incertidumbre — recolección de datos (bloque 5).** El efecto de las campañas sobre el resultado observado a T+30 puede introducir sesgo de retroalimentación: los clientes contactados y retenidos podrían parecer de bajo riesgo en datos posteriores. Todavía no se ha cuantificado el efecto causal del contacto ni se dispone de una estrategia validada para corregirlo. En el Reto 02 se distinguirán los estados de contacto en los datos disponibles y, en los Retos 03 y 06, se documentarán las limitaciones del entrenamiento y de la simulación de impacto. Esta es una hipótesis de riesgo, no una medición confirmada.
 
 ## 4. KPIs
 
@@ -75,9 +75,6 @@ Llamar a un cliente tiene valor esperado positivo si su probabilidad de deserci�
 | Operación | Lista disponible el lunes a las 07:00 | Sin procedimiento (hoy se arma a mano) | 100 % de las semanas (Contrato §5) | Hora del archivo de la lista |
 | Gestión | Tags `rNN` publicados a tiempo | — (primer reto) | 100 % antes de la fecha límite (Contrato §6.2) | Fecha del tag en GitHub |
 | Gestión | Tiempo de rollback desde la decisión hasta que `/health` informa la versión de `@previous` (HU-11) | Sin procedimiento | < 30 min | Ensayo cronometrado del Reto 05 |
-
-## 5. Alcance y nivel de madurez MLOps objetivo
-
 
 ## 5. Alcance y nivel de madurez MLOps objetivo
 
@@ -122,7 +119,7 @@ La correspondencia entre ambas escalas es aproximada: no representan niveles té
 | Paso manual | Responsable | Por qué se conserva manual |
 |---|---|---|
 | Revisar alertas y determinar si se requiere reentrenamiento extraordinario. | Data Scientist / Data Steward. | Una alerta de drift no demuestra por sí sola deterioro del modelo; las etiquetas se reciben a T+30. |
-| Activar y supervisar el reentrenamiento mensual. | Data Scientist / Data Steward. | Permite verificar los datos y registrar la corrida antes de proponer una versión nueva. El pipeline de entrenamiento sigue siendo reproducible. |
+| Revisar el resultado del reentrenamiento mensual programado (primer lunes, 02:00), sin activar manualmente la ejecución prevista. | Data Scientist / Data Steward. | Permite verificar datos, métricas y trazabilidad antes de solicitar la promoción de una versión nueva. La ejecución mensual sigue el calendario del contrato. |
 | Aprobar los umbrales del quality gate. | Líder / PO, con aprobación del comité. | Los criterios de calidad deben ser acordados antes de evaluar una promoción (Contrato §9.2). |
 | Evaluar y ejecutar la promoción de `@challenger` a `@champion`. | Líder / PO supervisa; ML / MLOps Engineer ejecuta. | Ninguna versión debe llegar a producción sin `gate.json` aprobado y una decisión registrada (Contrato §4). |
 | Aprobar `model.decision_threshold`. | Sponsor — Gerencia Comercial. | El umbral responde al valor económico, la capacidad semanal y la política de equidad, no únicamente al desempeño estadístico (Contrato §9.2). |
@@ -161,7 +158,7 @@ Para V4 se prioriza un sistema reproducible, probado y monitoreado, con automati
 | Pipeline de datos y versionado |  | I | C | A/R |  |  |
 | Experimentos y selección de modelo |  | I | A/R | C |  |  |
 | Umbrales del quality gate `gate.*` | I | **A**¹ | C | R |  | C |
-| Umbral de decisión del negocio `decision_threshold` | **A** | C | R | I |  |  |
+| Umbral de decisión del negocio `model.decision_threshold` | **A** | C | R | I |  |  |
 | Brecha de equidad aceptable | I | C | R | I |  | **A** |
 | Promoción a @champion | I | **A** | C | R |  |  |
 | Despliegue y monitoreo |  | I | C | A/R |  |  |
@@ -178,94 +175,117 @@ El Líder / PO coordinará la planificación y el seguimiento de sus respuestas;
 Las acciones, disparadores, probabilidades, impactos y estados se documentan en [Registro de riesgos](riesgos.md).
 
 
+**Nota ¹:** Los umbrales `gate.*` tienen como A al Líder/PO, pero requieren aprobación del Comité (Contrato §9.2). En la fila «Envío de datos a un proveedor de LLM externo», se mantiene al Líder/PO como consultado; la comunicación al equipo se documentará en el registro de decisiones.
+
 ## 7. Backlog estimado, Definición de Terminado y cronograma
 
-### 7.1. Resumen Historia de Usuario
+### 7.1. Backlog de referencia y estimaciones del tablero
 
-| Id | Historia | Prioridad | Fase CRISP-ML(Q) | Talla | Estimación (h) | PERT Te (h) |
-|----|----------|-----------|------------------|-------|----------------|-------------|
-| HU-01 | Decisión que cambia el SRT y su valor | Alta | Comprensión del negocio y los datos | M | 6 | |
-| HU-02 | Quién aprueba umbrales, equidad y rollback | Alta | Comprensión del negocio y los datos | S | 3 | |
-| HU-03 | Pipeline se detiene con datos inválidos | Alta | Ingeniería de datos | L | 10 | |
-| HU-04 | Excluir fuga de información | Alta | Ingeniería de datos | L | 10 | |
-| HU-05 | Reconstruir el modelo de cualquier tag | Alta | Ingeniería del modelo | M | 6 | |
-| HU-06 | Comparar al menos tres corridas | Media | Ingeniería del modelo | L | 10 | |
-| HU-07 ⚙️ | Nada llega a main sin pruebas y gate | Alta | Evaluación | L | 10 | 8.7 |
-| HU-08 ⚙️ | Lista de riesgo cada lunes 07:00 | Alta | Despliegue | M | 6 | 6.5 |
-| HU-09 ⚙️ | Consultar riesgo en < 1 s | Media | Despliegue | L | 10 | 8.7 |
-| HU-10 ⚙️ | Reporte de drift por lote | Alta | Monitoreo y mantenimiento | L | 10 | 8.3 |
-| HU-11 ⚙️ | Rollback en < 30 min | Alta | Monitoreo y mantenimiento | L | 10 | 9.0 |
-| HU-12 | Ahorro estimado vs. llamar al azar | Alta | Evaluación | L | 10 | |
-| HU-13 | Brecha de recall entre grupos | Alta | Evaluación | L | 10 | |
-| HU-14 | Model card con evidencia | Media | Evaluación | L | 10 | |
-| HU-15 | Explicación breve del riesgo (LLM) | Media | Despliegue | M | 6 | |
-| HU-16 ⚙️ | Prompt solo se publica si pasa evaluación | Media | Monitoreo y mantenimiento | M | 6 | 6.8 |
-| HU-17 ⚙️ | Comunicado y post-mortem sin culpables | Alta | Monitoreo y mantenimiento | S | 3 | 4.3 |
-| SPIKE | ¿Ollama qwen3:4b < 20 s en nuestros equipos? | Alta | Comprensión del negocio y los datos | S | 3 | |
-| | **Total** | | | | **139** | **52.3** |
+El tablero GitHub Projects muestra **HU-01 a HU-17**, todas en estado `Backlog`, con prioridad, talla y estimación; su suma visible es **129 h**. Las siete historias de operación están identificadas con ⚙️. La captura revisada muestra **17 historias sin persona asignada** y **ningún spike visible**. Por ello, la columna «R propuesto» representa planificación del charter y **no asignaciones ya realizadas en GitHub**. Las fases y retos también deben registrarse en el tablero.
 
-**Tallas:**
-- **S** = 3 h 
-- **M** = 6 h 
-- **L** = 10 h 
-- **XL** = 16 h. 
+| Id | Historia | Prioridad | Fase CRISP-ML(Q) | Talla | GitHub (h) | Reto | R propuesto |
+|---|---|---|---|---|---:|---|---|
+| HU-01 | Decisión que cambia el SRT y su valor | Alta | Comprensión del negocio y datos | M | 6 | 00–01 | Líder/PO |
+| HU-02 | Quién aprueba umbrales, equidad y rollback | Alta | Comprensión del negocio y datos | S | 3 | 01 | Líder/PO |
+| HU-03 | Pipeline se detiene con datos inválidos | Alta | Ingeniería de datos | L | 10 | 02 | DS/Steward |
+| HU-04 | Excluir fuga de información | Alta | Ingeniería de datos | L | 10 | 02 | DS/Steward |
+| HU-05 | Reconstruir el modelo de cualquier tag | Alta | Ingeniería del modelo | M | 6 | 03 | MLOps |
+| HU-06 | Comparar al menos tres corridas | Media | Ingeniería del modelo | L | 10 | 03 | DS/Steward |
+| HU-07 ⚙️ | Nada llega a `main` sin pruebas y gate | Alta | Evaluación | M | 6 | 04 | Líder/PO, apoyo MLOps |
+| HU-08 ⚙️ | Lista de riesgo cada lunes 07:00 | Alta | Despliegue | S | 3 | 04 | MLOps |
+| HU-09 ⚙️ | Consultar riesgo en menos de 1 s | Media | Despliegue | M | 6 | 05 | MLOps |
+| HU-10 ⚙️ | Reporte de drift por lote | Alta | Monitoreo y mantenimiento | L | 10 | 05 | DS/Steward |
+| HU-11 ⚙️ | Rollback en menos de 30 min | Alta | Monitoreo y mantenimiento | S | 3 | 03 y 05 | MLOps, apoyo Líder/PO |
+| HU-12 | Ahorro estimado vs. llamar al azar | Alta | Evaluación | L | 10 | 06 | Líder/PO, apoyo DS/Steward |
+| HU-13 | Brecha de recall entre grupos | Alta | Evaluación | L | 10 | 06 | DS/Steward |
+| HU-14 | Model card con evidencia | Media | Evaluación | L | 10 | 06 | DS/Steward |
+| HU-15 | Explicación breve del riesgo (LLM) | Media | Despliegue | M | 6 | 07 | MLOps |
+| HU-16 ⚙️ | Prompt solo se publica si pasa evaluación | Media | Monitoreo y mantenimiento | L | 10 | 07 | MLOps |
+| HU-17 ⚙️ | Comunicado y post-mortem sin culpables | Alta | Monitoreo y mantenimiento | L | 10 | 05 y Final | Líder/PO |
+| **Total HU** | | | | | **129** | | |
 
-**PERT:** Te = (O + 4·M + P) / 6 (ver tabla de estimación PERT).
+**Escala de tallas:** S = 3 h; M = 6 h; L = 10 h; XL = 16 h. **Spike de investigación adicional:** 3 h; no aparece en las 129 h ni está verificado como tarjeta del tablero.
 
-**Total comprometido** (Estimación de las historias normales y el spike + PERT de las ⚙️): 84 + 52.3 = **≈136.3 h**.
+**Tablero:** [agregar aquí la URL específica de GitHub Projects]. Repositorio: https://github.com/BrayhanJC/srtandina.
 
-### 7.2 Estimación PERT — historias de usuario ⚙️
+### 7.2. PERT para las siete historias operativas
 
-Fórmula: **Te = (O + 4·M + P) / 6**
+Se conserva la estimación de tres puntos del equipo, que representa un cálculo **alternativo de compromiso para esas siete historias**, no horas adicionales a las mismas HU. `Te = (O + 4M + P)/6`.
 
-- **O (optimista):** horas si todo sale bien a la primera.
-- **M (más probable):** horas en un caso normal, con algún tropiezo. Pesa 4.
-- **P (pesimista):** horas si casi todo sale mal, sin llegar a una catástrofe.
-- Se divide entre 6 porque los pesos suman 1 + 4 + 1 = 6 (promedio ponderado).
+| Historia | Estimación GitHub (h) | O (h) | M (h) | P (h) | PERT Te (h) |
+|---|---:|---:|---:|---:|---:|
+| HU-07 ⚙️ | 6 | 4 | 8 | 16 | 8,67 |
+| HU-08 ⚙️ | 3 | 3 | 6 | 12 | 6,50 |
+| HU-09 ⚙️ | 6 | 4 | 8 | 16 | 8,67 |
+| HU-10 ⚙️ | 10 | 4 | 8 | 14 | 8,33 |
+| HU-11 ⚙️ | 3 | 4 | 8 | 18 | 9,00 |
+| HU-16 ⚙️ | 10 | 3 | 6 | 14 | 6,83 |
+| HU-17 ⚙️ | 10 | 2 | 4 | 8 | 4,33 |
+| **Subtotal** | **48** | **24** | **48** | **98** | **52,33** |
 
-#### Tabla de estimación
+**Conciliación de cifras:** la estimación del tablero corresponde a **129 h de HU**. Las HU no operativas suman **81 h**; las siete operativas, **48 h**. Al sustituir las 48 h de operaciones por 52,33 h PERT y agregar el spike de 3 h, el **compromiso de planificación con incertidumbre asciende a 136,33 h** (`81 + 52,33 + 3`). Las 129 h del tablero y 136,33 h de planificación **no se contradicen**: corresponden a bases distintas. La decisión del `decision_log.md` que denomina «129 h incluido el spike» debe corregirse, pues el spike no aparece en esa suma.
 
-| Id | Historia | Reto | O (h) | M (h) | P (h) | Cálculo | Te (h) |
-|----|----------|------|------:|------:|------:|---------|-------:|
-| HU-07 ⚙️ | Como Líder, quiero que ningún cambio llegue a main sin pasar pruebas y quality gate, para no degradar producción | 04 | 4 | 8 | 16 | (4 + 4·8 + 16) / 6 = (4 + 32 + 16) / 6 = 52 / 6 | **8.7** |
-| HU-08 ⚙️ | Como gerente comercial, quiero la lista de clientes en riesgo cada lunes a las 07:00, para planear la campaña | 04 | 3 | 6 | 12 | (3 + 4·6 + 12) / 6 = (3 + 24 + 12) / 6 = 39 / 6 | **6.5** |
-| HU-09 ⚙️ | Como agente, quiero consultar el riesgo de un cliente en menos de un segundo, para usarlo durante la llamada | 05 | 4 | 8 | 16 | (4 + 4·8 + 16) / 6 = (4 + 32 + 16) / 6 = 52 / 6 | **8.7** |
-| HU-10 ⚙️ | Como responsable del modelo, quiero un reporte de drift de cada lote, para decidir si reentrenar | 05 | 4 | 8 | 14 | (4 + 4·8 + 14) / 6 = (4 + 32 + 14) / 6 = 50 / 6 | **8.3** |
-| HU-11 ⚙️ | Como sponsor, quiero volver a la versión anterior en menos de 30 minutos, para limitar el daño de una mala promoción | 03, 05 | 4 | 8 | 18 | (4 + 4·8 + 18) / 6 = (4 + 32 + 18) / 6 = 54 / 6 | **9.0** |
-| HU-16 ⚙️ | Un cambio de prompt solo se publica si pasa su evaluación | 07 | 3 | 6 | 14 | (3 + 4·6 + 14) / 6 = (3 + 24 + 14) / 6 = 41 / 6 | **6.8** |
-| HU-17 ⚙️ | Comunicado claro y post-mortem sin culpables | 05, S8 | 2 | 4 | 8 | (2 + 4·4 + 8) / 6 = (2 + 16 + 8) / 6 = 26 / 6 | **4.3** |
-| | **Total** | | **24** | **48** | **98** | | **52.3** |
+### 7.3. Capacidad y compromiso
 
-### 7.1. Marco de gestión
+La declaración del equipo de **12, 8 y 8 horas por semana** equivale a 28 h brutas semanales. Los totales suministrados de 96/64/64 h presuponen **8 semanas**; este horizonte debe confirmarse como semanas efectivamente disponibles hasta S8.
 
-Se adopta un marco híbrido Kanban + CRISP-ML(Q), considerando la disponibilidad parcial del equipo, las dependencias técnicas y las fechas de entrega del curso. Cada iteración corresponde al ciclo de planificación, ejecución y revisión de los retos asignados a un FDS. Se conserva una reunión inicial de planificación, seguimiento asincrónico mediante GitHub Projects y revisión previa a cada entrega. Entre fines de semana, las tareas se coordinan mediante el tablero y pull requests, notificando oportunamente los bloqueos de infraestructura, conocimiento o tiempo.
+| Integrante | h/semana | Semanas asumidas | Horas brutas | Enfoque | Capacidad efectiva |
+|---|---:|---:|---:|---:|---:|
+| Jorge Andrés Ángel (Líder/PO) | 12 | 8 | 96 | 0,70 | 67,20 h |
+| Juan Camilo Zuluaga (DS/Steward) | 8 | 8 | 64 | 0,70 | 44,80 h |
+| Brayhan Jaramillo (MLOps) | 8 | 8 | 64 | 0,70 | 44,80 h |
+| **Total** | **28** | | **224** | | **156,80 h** |
 
-### 7.2. Definición de Terminado (DoD)
+- **Capacidad efectiva antes de reprocesos:** 156,80 h.
+- **Reserva de reprocesos propuesta para aprobación:** 10 h (no confirmada por el equipo).
+- **Capacidad neta si se aprueba esa reserva:** 146,80 h.
+- **Compromiso de planificación (PERT + spike):** 136,33 h.
+- **Holgura condicionada:** 10,47 h (`146,80 − 136,33`).
 
-| Criterio | Aplicación | Evidencia |
+**Decisión condicionada:** con ocho semanas disponibles y una reserva aprobada de 10 h, el compromiso cabe por 10,47 h. Si el horizonte es menor o se materializan los riesgos R-01 a R-03, se recalcula la capacidad y se documenta cualquier redistribución o recorte de **extensiones opcionales**, sin eliminar las 17 historias canónicas por decisión unilateral. La comparación y su aprobación deben quedar registradas en `docs/decision_log.md`.
+
+### 7.4. Spike de investigación
+
+| Elemento | Definición |
+|---|---|
+| Pregunta | ¿Puede Ollama con `qwen3:4b` producir explicaciones en menos de 20 s en los computadores del equipo? |
+| Tiempo máximo | 3 h, adicionales a las 129 h del tablero |
+| Ejecutor propuesto | MLOps Engineer |
+| Criterio de salida | Inventario mínimo de equipo y prueba local con tiempos documentados; comprobar si la mediana de respuestas es inferior a 20 s y registrar limitaciones. |
+| Decisión informada | Continuar con LLM local si resulta viable o evaluar alternativa permitida; el Sponsor debe autorizar cualquier transmisión a proveedor LLM externo. |
+| Estado del tablero | **Pendiente de crear/verificar** como tarjeta independiente. |
+
+### 7.5. Marco de gestión
+
+Se adopta **Kanban + CRISP-ML(Q)**: CRISP-ML(Q) organiza las fases técnicas y Kanban el flujo de trabajo entre encuentros. Cada iteración corresponde a la planificación, ejecución, revisión y entrega de los retos del FDS. Se mantienen planificación inicial breve, seguimiento asíncrono en GitHub Projects y revisión del cumplimiento antes de cada tag. No se exige una ceremonia Scrum diaria presencial; cada integrante actualiza bloqueos, evidencias y cambios mediante tablero y PR revisados.
+
+### 7.6. Definición de Terminado (DoD)
+
+| Criterio | Desde cuándo aplica | Evidencia |
 |---|---|---|
-| Pull Request revisado por otro integrante antes de integrar a `main`. | Desde Reto 01. | PR aprobado y fusionado. |
-| `dvc repro` reproduce el resultado y `dvc.lock` está actualizado. | Desde Reto 03, para cambios que afecten el pipeline. | Pipeline reproducido y archivos versionados. |
-| Integración continua (CI) satisfactoria. | Desde Reto 04. | GitHub Actions en verde. |
-| Decisiones relevantes registradas en `docs/decision_log.md`. | Desde Reto 00. | Entrada con responsable y evidencia. |
-| Registro de riesgos revisado y actualizado según corresponda. | Desde Reto 01. | `docs/riesgos.md` vigente. |
+| PR revisado por otro integrante antes de integrar a `main`. | Reto 01, para cambios nuevos | PR aprobado y fusionado. |
+| `dvc repro` y `dvc.lock` actualizado para cambios del pipeline. | Reto 03 | Ejecución reproducible y archivos versionados. |
+| CI en verde. | Reto 04 | Ejecución de GitHub Actions. |
+| Decisiones relevantes registradas en `docs/decision_log.md`. | Reto 00 | Entrada fechada con alternativas, responsable y evidencia. |
+| Riesgos revisados y actualizados, cuando corresponda. | Reto 01 | `docs/riesgos.md` vigente. |
 
-### 7.3. Cronograma por fin de semana
+### 7.7. Cronograma por fin de semana
 
-| FDS | Reto | Responsable (R) | Tag y fecha límite |
-|-----|------|-----------------|--------------------|
-| 2 | 02 – Gobierno y contrato de datos | Juan Camilo Zuluaga (DS/Steward) | r02 · [fecha §6.2] |
-| 2 | 03 – Reproducibilidad y versionado | Brayhan Jaramillo (MLOps) | r03 · [fecha §6.2] |
-| 3 | 04 – Pruebas e integración continua | Jorge Andrés Ángel (Líder/PO, secundario MLOps) | r04 · [fecha §6.2] |
-| 3 | 05 – Despliegue, monitoreo y operación | Brayhan Jaramillo (MLOps) | r05 · [fecha §6.2] |
-| 4 | 06 – Impacto, equidad y gobernanza | Juan Camilo Zuluaga (DS/Steward) | r06 · [fecha §6.2] |
-| 4 | 07 – Asistente de explicación con LLM | Jorge Andrés Ángel (Líder/PO) | r07 · [fecha §6.2] |
-| 4 | Proyecto Final (simulacro y defensa) | Jorge Andrés Ángel (Líder/PO) | final · [fecha §6.2] |
+| FDS | Reto | Responsable de ejecución (R) propuesto | Tag y plazo contractual |
+|---|---|---|---|
+| 2 | 02 — Gobierno y contrato de datos | DS/Steward | `r02` — 7 días después de FDS 2 |
+| 2 | 03 — Reproducibilidad y versionado | MLOps | `r03` — 7 días después de FDS 2 |
+| 3 | 04 — Pruebas e integración continua | Líder/PO (secundario MLOps) | `r04` — 7 días después de FDS 3 |
+| 3 | 05 — Despliegue, monitoreo y operación | MLOps | `r05` — 7 días después de FDS 3 |
+| 4 | 06 — Impacto, equidad y gobernanza | DS/Steward | `r06` — inicio de S8 |
+| 4 | 07 — Asistente de explicación con LLM | Líder/PO, apoyo MLOps | `r07` — inicio de S8 |
+| 4 / S8 | Proyecto Final — Simulacro y defensa | Líder/PO, con participación de todo el equipo | `final` — S8, antes de la primera defensa según horario acordado |
 
-El responsable (R) coordina y entrega el reto; todos los integrantes trabajan en él según el tablero.
+No se inventan fechas calendario: se consignan los plazos relativos del Contrato §6.2. Antes de la entrega deben quedar efectivamente asignados los responsables de las historias en el tablero.
 
-Las asignaciones de responsabilidad se revisarán frente a la capacidad real del equipo y las dependencias de cada historia. Las fechas definitivas se completarán cuando se confirme el calendario académico.
+### 7.8. Historia de mayor incertidumbre
 
+**HU-11 — Rollback en menos de 30 minutos** se propone como historia peor estimada: GitHub le asigna **S = 3 h**, mientras PERT estima **9 h** (O = 4, M = 8, P = 18), una desviación de **+6 h** frente a la talla. La falta de experiencia operativa y la infraestructura limitada pueden ampliar el esfuerzo (R-01 y R-02). Se propone dividirla en preparación de aliases y runbook, prueba de recuperación y ensayo de `/health`; MLOps y Líder/PO trabajarán en pareja en caso de bloqueo. **La elección debe ratificarse en `docs/decision_log.md`** y el resultado real se comprobará en el Reto 05.
 
 ## 8. Riesgos principales
 
