@@ -1,0 +1,5 @@
+outs:
+- md5: 17bca792551fe4a92d2995ad9ec06827
+  size: 657548
+  hash: md5
+  path: crm_extracto.csv

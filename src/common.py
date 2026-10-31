@@ -10,6 +10,12 @@ ROOT = Path(__file__).resolve().parents[1]
 RAW_DATA = ROOT / "data" / "raw" / "churn.csv"
 TRAIN_DATA = ROOT / "data" / "processed" / "train.csv"
 TEST_DATA = ROOT / "data" / "processed" / "test.csv"
+CRM_EXTRACT = (
+    ROOT / "data" / "raw" / "crm_extracto.csv"
+)  # extracto CRM bajo DVC (Reto 02)
+CLEAN_DATA = (
+    ROOT / "data" / "processed" / "clean.csv"
+)  # salida de src/clean.py (Reto 02)
 MODEL_PATH = ROOT / "models" / "model.joblib"
 MODEL_META = ROOT / "models" / "model_meta.json"
 METRICS_PATH = ROOT / "metrics.json"
