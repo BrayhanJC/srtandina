@@ -23,10 +23,6 @@ COLUMNAS_EXCLUIDAS: dict[str, str] = {
     "oferta_retencion_aceptada": "fuga: se registra tras la campaña, no se conoce el lunes 06:00 (RC-5)",
 }
 
-# Acuerdo #4 con el dueño del dato: tenure_months = -1 (sin fecha_alta) se recodifica al tope del sistema.
-TENURE_SIN_ALTA = -1
-TENURE_TOPE = 72
-
 
 def clean(df: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
     """Devuelve (conjunto limpio, informe). Cada tratamiento actúa sobre el VALOR NEGOCIADO."""
@@ -40,11 +36,6 @@ def clean(df: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
     mascara = df["contract_type"] == "Month-to-month"
     t["recodificado_contract_type"] = int(mascara.sum())
     df.loc[mascara, "contract_type"] = "month-to-month"
-
-    # Acuerdo #4: tenure_months = -1 (fecha de alta desconocida) → 72, el tope del sistema.
-    mascara = df["tenure_months"] == TENURE_SIN_ALTA
-    t["recodificado_tenure_months"] = int(mascara.sum())
-    df.loc[mascara, "tenure_months"] = TENURE_TOPE
 
     # Duplicados de customer_id (acuerdos #6 y #7), calculados sobre el extracto ya recodificado.
     repetido = df[ID_COL].duplicated(keep=False)
@@ -60,6 +51,7 @@ def clean(df: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
     reglas_exclusion: dict[str, pd.Series] = {
         "payment_method_tarjeta_debito": df["payment_method"] == "tarjeta_debito",  # #2
         "monthly_charges_vacio": df["monthly_charges"].isna(),  # #3
+        "tenure_months_menos_1": df["tenure_months"] == -1,  # #4 (fecha_alta vacía)
         "support_tickets_99": df["support_tickets"] == 99,  # #5
         "duplicado_copia_exacta": copia_exacta,  # #6
         "duplicado_cargo_menor": con_dos_cargos & cargo_menor,  # #7
