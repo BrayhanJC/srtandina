@@ -3,7 +3,7 @@
 **Proyecto:** Sistema de Retención Temprana (SRT) — Conecta Andina S.A.  
 **Variante:** V4 — Hogar fibra premium  
 **Referencia:** Reto 01 (versión lite), Contrato del sistema y `docs/charter.md`.  
-**Estado:** Estimaciones conciliadas con la captura del tablero; faltan aprobación de supuestos de capacidad y evidencias de ejecución.
+**Estado:** Estimaciones conciliadas con la captura del tablero y protocolo PS-1 alineado con la RACI corregida; faltan aprobación de supuestos de capacidad y evidencias de ejecución.
 
 ## 1. PS-1. Prueba de incidentes (RACI)
 
@@ -14,9 +14,9 @@ Las respuestas siguientes se basan en la RACI registrada en `docs/charter.md` §
 | **1. Lunes 07:10:** el lote incumple una regla bloqueante. | **Dueño del dato**, si se requiere decidir un cambio al contrato de datos. | **DS/Steward** valida, detiene el lote y escala el incumplimiento. | **Líder/PO** y **Sponsor**, como escalamiento operativo; el Sponsor figura como I en la fila del contrato. | No generar lista con el lote inválido; registrar regla y evidencia, activar `CRÍTICO-CONTRATO` y consultar al Dueño del dato. RACI: «Contrato de datos y sus cambios»; riesgo R-04. |
 | **2. Martes:** la API supera el 10 % de errores tras la promoción. | **Líder/PO**, sobre rollback. | **MLOps Engineer** realiza reversión y verificación. | **Sponsor**, según la fila «Rollback ante incidente». | Diagnosticar, obtener decisión de rollback, restaurar `@previous` y verificar que `/health` informe la versión restaurada en **menos de 30 minutos desde la decisión**. RACI: «Rollback ante incidente»; HU-11. |
 | **3. `@challenger`** mejora ROC-AUC, pero supera la brecha de equidad. | **Comité**, respecto a la brecha aceptable; **Líder/PO** conserva la A de promoción. | **DS/Steward** calcula/documenta la brecha; **MLOps** ejecutaría una promoción solo si estuviera autorizada. | **Sponsor**, de acuerdo con la fila «Brecha de equidad aceptable». | No promover mientras incumpla `recall_gap_senior_citizen ≤ 0.10`, salvo decisión formal de la autoridad competente y cumplimiento del gate. RACI: «Brecha de equidad aceptable» y «Promoción a @champion»; R-06. |
-| **4. Se propone utilizar Claude API** con datos del extracto. | **Sponsor**, autoridad sobre el envío a un proveedor LLM externo. | **MLOps Engineer**, solo después de autorización. | La RACI del equipo no marca un **I** expreso en esta fila; **Líder/PO, DS/Steward, Dueño del dato y Comité** figuran como consultados (**C**). | No enviar datos sin autorización; revisar campos, privacidad y restricciones; excluir `customer_id` y `senior_citizen`. RACI: «Envío de datos a un proveedor de LLM externo». |
+| **4. Se propone utilizar Claude API** con datos del extracto. | **Sponsor**, autoridad sobre el envío a un proveedor LLM externo. | **MLOps Engineer**, solo después de autorización. | **Líder/PO**, marcado como **I** en la RACI corregida; **DS/Steward, Dueño del dato y Comité** figuran como consultados (**C**). | No enviar datos sin autorización; revisar campos, privacidad y restricciones; excluir `customer_id` y `senior_citizen`. RACI: «Envío de datos a un proveedor de LLM externo». |
 
-**Nota para PS-1:** En los casos 1 y 4 la respuesta distingue la autoridad canónica del contrato de los mecanismos operativos de comunicación. Para afirmar un **I** formal en el caso 4, la RACI debe actualizarse antes de entregar el reto.
+**Nota para PS-1:** La respuesta del caso 4 se corresponde con la RACI del `charter.md` corregido: Sponsor (A), MLOps (R) y Líder/PO (I). En el caso 1, el Dueño del dato es A para **cambios del contrato**; la invalidación del lote y su escalamiento son una acción operativa que ejecuta DS/Steward, sin modificar unilateralmente el contrato.
 
 ## 2. PS-2. Capacidad frente al backlog
 
@@ -33,7 +33,7 @@ La vista **Team items** permite observar **17 HU** (HU-01 a HU-17) en estado Bac
 | Spike Ollama adicional | 3,00 | Planificación; pendiente de crear en tablero |
 | **Compromiso de planificación** | **136,33** | **81 + 52,33 + 3** |
 
-Las 129 h son la suma visible del tablero **sin spike**. Las 136,33 h no se suman a las 129 h; reemplazan las 48 h operativas por el cálculo PERT y agregan el spike. Corregir la fila de `decision_log.md` del 2026-10-26 que afirma que «129 horas» incluyen el spike.
+Las 129 h son la suma visible del tablero **sin spike**. Las 136,33 h no se suman a las 129 h; reemplazan las 48 h operativas por el cálculo PERT y agregan el spike. La decisión del 2026-10-26 ya fue **corregida en la versión `decision_log_corregido_r01.md`**: distingue 129 h de GitHub y 136,33 h de planificación. Verificar que esa versión reemplace el archivo del repositorio.
 
 ### 2.2. Capacidad declarada
 
@@ -64,7 +64,7 @@ Los valores de 96/64/64 h corresponden a las horas brutas de **ocho semanas supu
 
 ## 3. PS-3. Cobertura de categorías de riesgos
 
-El archivo `docs/riesgos.md` recibido contiene siete riesgos y cubre las seis categorías obligatorias. El siguiente es el **resultado esperado de la revisión documental**, no una salida capturada de la terminal.
+El archivo `docs/riesgos.md` recibido contiene siete riesgos y cubre las seis categorías obligatorias. El siguiente es el **conteo de la revisión documental** del archivo proporcionado; no es una salida capturada de la terminal del repositorio.
 
 ```text
 datos      1
@@ -119,7 +119,7 @@ Registrar únicamente el trabajo efectivamente realizado, con commits, PR, captu
 - [ ] Confirmar que las **8 semanas** usadas en PS-2 son efectivamente disponibles hasta S8.
 - [ ] Aprobar o ajustar la **reserva propuesta de 10 h** para reprocesos.
 - [x] Conciliar **129 h del tablero** con **136,33 h PERT + spike** (cálculo documentado).
-- [ ] Corregir en `decision_log.md` la expresión «129 h incluido el spike».
+- [ ] Incorporar en el repositorio la versión corregida de `docs/decision_log.md` (129 h GitHub / 136,33 h de planificación).
 - [ ] Crear/verificar la tarjeta del spike, los responsables y las fases CRISP-ML(Q) en GitHub Projects.
 - [ ] Pegar la **salida real** de PS-3.
 - [ ] Validar HU-11 como historia peor estimada y registrar la decisión.
