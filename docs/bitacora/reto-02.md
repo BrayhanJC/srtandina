@@ -421,3 +421,19 @@ La RACI del Reto 01 define los roles primarios. **No se dispone de evidencia suf
 **Conclusión de avance:** la limpieza acordada produce un conjunto de nueve columnas que supera el contrato v2; el extracto crudo es rechazado por ocho reglas, entre ellas RC-3 y RC-5; dos advertencias no canónicas quedan identificadas y las once pruebas automatizadas suministradas aprobaron. La entrega académica completa requiere incorporar las evidencias pendientes señaladas y cerrar formalmente las decisiones de gobierno, antes de publicar `r02`.
 
 **Precaución de entrega:** no confirmar en Git archivos CSV de clientes, copias temporales corruptas ni salidas que contengan `customer_id`. Versionar únicamente código, documentación, archivos `.dvc` y reportes agregados autorizados.
+
+
+## 11. Plan de gobernanza
+| Elemento | Decisión |
+|---|---|
+| Dueño y custodio del dato | Jefatura de CRM y Facturación (canal de soporte: mesa de datos CRM) |
+| Datos personales y tratamiento (Ley 1581 de 2012) | El customer_id es un código interno; la tabla de correspondencia con el documento de identidad la custodia Facturación y no se entrega Código seudonimizado del cliente, formato CNNNN-NNNNNN|
+| Finalidad autorizada | |
+| Minimización | region, fecha_alta, fecha_corte, oferta_retencion_aceptada |
+| Política de acceso | | Exclusivamente el proyecto Sistema de Retención Temprana; prohibida la entrega a terceros. Los
+clientes autorizaron el tratamiento de sus datos para "gestión comercial, fidelización y análisis
+estadístico" (política de tratamiento de datos de Conecta Andina).
+| Datos personales y tratamiento (Ley 1581 de 2012) | El customer_id es un código interno; la tabla de correspondencia con el documento de identidad la custodia Facturación y no se entrega Código seudonimizado del cliente, formato CNNNN-NNNNNN|
+| Versionamiento (DVC y remoto) | pendiente (versión lite) |
+| Linaje (crudo → validado → train/test → modelo) | `dvc dag` |
+| Retención | pendiente (versión lite) |

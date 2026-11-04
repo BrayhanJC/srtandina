@@ -116,6 +116,7 @@ Código de salida: 1.
 
 ## 3. Hallazgos del EDA
 
+## 3.1 FUGA DE DATOS
 La columna `oferta_retencion_aceptada` está excluida del modelo por el contrato §2.3.
 El conteo cruzado contra `churn` muestra por qué.
 
@@ -159,9 +160,14 @@ Implementado en `contracts/churn_contract.py` y verificado en la etapa `validate
 ## 5. Plan de gobernanza
 | Elemento | Decisión |
 |---|---|
-| Propietario y custodio del dato | |
-| Política de acceso | |
-| Datos personales y tratamiento (Ley 1581 de 2012) | |
-| Versionamiento (DVC y remoto) | |
+| Dueño y custodio del dato | Jefatura de CRM y Facturación (canal de soporte: mesa de datos CRM) |
+| Datos personales y tratamiento (Ley 1581 de 2012) | El customer_id es un código interno; la tabla de correspondencia con el documento de identidad la custodia Facturación y no se entrega Código seudonimizado del cliente, formato CNNNN-NNNNNN|
+| Finalidad autorizada | |
+| Minimización | region, fecha_alta, fecha_corte, oferta_retencion_aceptada |
+| Política de acceso | | Exclusivamente el proyecto Sistema de Retención Temprana; prohibida la entrega a terceros. Los
+clientes autorizaron el tratamiento de sus datos para "gestión comercial, fidelización y análisis
+estadístico" (política de tratamiento de datos de Conecta Andina).
+| Datos personales y tratamiento (Ley 1581 de 2012) | El customer_id es un código interno; la tabla de correspondencia con el documento de identidad la custodia Facturación y no se entrega Código seudonimizado del cliente, formato CNNNN-NNNNNN|
+| Versionamiento (DVC y remoto) | pendiente (versión lite) |
 | Linaje (crudo → validado → train/test → modelo) | `dvc dag` |
-| Retención | |
+| Retención | pendiente (versión lite) |
