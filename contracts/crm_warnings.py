@@ -15,7 +15,13 @@ warnings_schema = pa.DataFrameSchema(
         "fecha_corte": pa.Column(str),
     },
     checks=[
-        # Una regla por fila (devuelve una serie booleana). Ejemplo tomado de la ficha técnica:
+        # Advertencia 1: fecha de alta ausente (28 filas en el perfil V4).
+        # No es bloqueante aquí porque fecha_alta no forma parte del esquema canónico.
+        pa.Check(
+            lambda df: df["fecha_alta"].notna(),
+            error="ADVERTENCIA: fecha_alta vacía",
+        ),
+        # Advertencia 2: alta posterior al corte (20 filas en el perfil V4).
         pa.Check(
             lambda df: df["fecha_alta"].isna() | (df["fecha_alta"] <= df["fecha_corte"]),
             error="fecha_alta posterior a fecha_corte",
