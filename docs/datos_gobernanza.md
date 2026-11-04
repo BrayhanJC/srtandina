@@ -116,6 +116,37 @@ Código de salida: 1.
 
 ## 3. Hallazgos del EDA
 
+La columna `oferta_retencion_aceptada` está excluida del modelo por el contrato §2.3.
+El conteo cruzado contra `churn` muestra por qué.
+
+| `oferta_retencion_aceptada` | `churn = 0` | `churn = 1` | Total | Tasa de churn |
+|---|---:|---:|---:|---:|
+| 1 — aceptó la oferta | 1 039 | 74 | 1 113 | **6,65 %** |
+| 0 — no aceptó | 3 675 | 1 854 | 5 529 | **33,53 %** |
+| **Observado** | **4 714** | **1 928** | **6 642** | **29,03 %** |
+
+Registros del extracto: 7 042. Los 400 que no aparecen en la tabla corresponden a
+filas sin valor en `oferta_retencion_aceptada`.
+
+**Lectura.** Quien aceptó la oferta deserta al 6,65 %; quien no la aceptó, al 33,53 %.
+Son 26,88 puntos de diferencia, una razón de 5,04 a 1. Ninguna de las siete features
+canónicas se acerca a ese poder de separación.
+
+Esa fuerza es exactamente la señal de alarma. `oferta_retencion_aceptada` no describe
+el estado del cliente **antes** de la decisión de contactarlo: registra el desenlace de
+la campaña de retención, un hecho posterior al momento en que el SRT tiene que predecir.
+El lunes a las 07:00, cuando hay que armar la lista, esa columna todavía está vacía para
+los clientes que importan.
+
+Entrenar con ella produciría un `roc_auc` alto en validación y un fracaso en producción:
+el modelo no habría aprendido quién está en riesgo, sino quién ya fue tratado con éxito.
+Es el caso de fuga descrito en el ML Canvas, bloque 9.
+
+**Consecuencia para el pipeline.** La exclusión queda verificada en `src/features.py`
+y cubierta por la regla RC-5 del contrato: ninguna columna fuera de §2.1 entra al modelo.
+HU-04 implementa el control.
+
+
 ## 4. Contrato de datos
 Implementado en `contracts/churn_contract.py` y verificado en la etapa `validate` de `dvc.yaml`.
 
