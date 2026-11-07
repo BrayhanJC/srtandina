@@ -95,3 +95,33 @@ Hasta el Reto 02, el pipeline de la plantilla entrenaba con datos **sintéticos*
 | Juan Camilo Zuluaga Serna | DS / Steward | _completar_ |
 | Brayhan Andrés Jaramillo Castaño | ML / MLOps Engineer | Cambios del Bloque 1 (`dvc.yaml`, `src/validate.py`, `src/prepare.py`) · _completar_ |
 
+## 4. Tabla modelos
+
+## Tres corridas y decisión de modelo
+
+Experimento controlado: mismo extracto limpio, misma partición (`split.seed = 42`), mismo entorno (`uv.lock`). Solo cambia `model.type`.
+
+| Corrida (run_id) | Modelo | roc_auc | recall | precision | recall_gap_senior_citizen | customers_contacted | net_savings_vs_random | ¿Pasa el gate? |
+|---|---|---:|---:|---:|---:|---:|---:|:---:|
+| `<run_id baseline>` | logistic_regression (baseline, `@champion`) | 0,8315 | 0,7253 | 0,5738 | 0,0821 | 474 | 38.177,33 | ✅ Sí |
+| `418dab6648b84cc0b505647bbb26a449` | random_forest | 0,8205 | 0,6747 | 0,5573 | 0,0667 | 454 | 34.535,20 | ❌ No (roc_auc 0,8205 < 0,8215, no regresión) |
+| `fc9cd78b0c7c45da843fc9161c52de01` | gradient_boosting | 0,8220 | 0,6827 | 0,5714 | 0,0952 | 448 | 35.791,57 | ✅ Sí (margen 0,0005) |
+
+### Detalle del quality gate
+
+Umbrales de `params.yaml → gate.*`. `recall_at_eval` y `precision_at_eval` se miden al umbral fijo `gate.eval_threshold = 0.30`. La no regresión exige `roc_auc ≥ roc_auc del @champion − 0,01 = 0,8315 − 0,01 = 0,8215`.
+
+| Modelo | roc_auc ≥ 0,75 | recall_at_eval ≥ 0,70 | precision_at_eval ≥ 0,45 | roc_auc ≥ 0,8215 (no regresión) | Resultado |
+|---|:---:|:---:|:---:|:---:|:---:|
+| logistic_regression | ✅ 0,8315 | ✅ 0,7680 | ✅ 0,5294 | ✅ sin champion previo | ✅ Pasa |
+| random_forest | ✅ 0,8205 | ✅ 0,7627 | ✅ 0,5062 | ❌ 0,8205 | ❌ No pasa |
+| gradient_boosting | ✅ 0,8220 | ✅ 0,7413 | ✅ 0,5245 | ✅ 0,8220 | ✅ Pasa |
+
+### Lectura de las columnas no técnicas
+
+| Columna | Referencia de la variante V4 | Lectura |
+|---|---|---|
+| `recall_gap_senior_citizen` | Brecha máxima 0,10 (`fairness.max_recall_gap_senior_citizen`) | Los tres cumplen. Random forest es el más equitativo (0,0667); gradient boosting queda cerca del límite (0,0952). |
+| `customers_contacted` | Capacidad de 400 llamadas por semana; en la escala del conjunto de prueba (1.361 de 6.805 clientes, 20 %) son ≈ 80 | Los tres contactan entre 448 y 474, muy por encima de la capacidad. Se debe al umbral provisional 0,35; se ajusta en el Reto 06. |
+| `net_savings_vs_random` | Ahorro frente a llamar al azar a la misma cantidad de clientes (miles de COP) | La logística aporta ≈ $2,4 M más que gradient boosting y ≈ $3,6 M más que random forest. |
+
