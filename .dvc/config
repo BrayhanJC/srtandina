@@ -1,2 +1,4 @@
 [core]
-    autostage = true
+    remote = almacen
+['remote "almacen"']
+    url = /Users/andresangel/Mi unidad/Maestria Ingenieria - Jorge Andres Angel Salazar/srt-remoto
