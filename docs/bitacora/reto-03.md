@@ -124,4 +124,3 @@ Umbrales de `params.yaml → gate.*`. `recall_at_eval` y `precision_at_eval` se 
 | `recall_gap_senior_citizen` | Brecha máxima 0,10 (`fairness.max_recall_gap_senior_citizen`) | Los tres cumplen. Random forest es el más equitativo (0,0667); gradient boosting queda cerca del límite (0,0952). |
 | `customers_contacted` | Capacidad de 400 llamadas por semana; en la escala del conjunto de prueba (1.361 de 6.805 clientes, 20 %) son ≈ 80 | Los tres contactan entre 448 y 474, muy por encima de la capacidad. Se debe al umbral provisional 0,35; se ajusta en el Reto 06. |
 | `net_savings_vs_random` | Ahorro frente a llamar al azar a la misma cantidad de clientes (miles de COP) | La logística aporta ≈ $2,4 M más que gradient boosting y ≈ $3,6 M más que random forest. |
-
