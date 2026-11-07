@@ -232,3 +232,11 @@ Cada reto deja su bitácora en `docs/bitacora/reto-NN.md` (plantilla en `docs/bi
 ├── Dockerfile  docker-compose.yml
 └── pyproject.toml  uv.lock  requirements.txt
 ```
+
+## 11. Reproducir desde cero
+
+1. `git clone https://github.com/BrayhanJC/srtandina && cd strandina`
+2. `uv sync --frozen`
+3. Si el remoto es una carpeta sincronizada: `uv run dvc remote modify --local almacen url "<su-ruta>"`
+4. `uv run dvc pull`
+5. `uv run dvc repro`
