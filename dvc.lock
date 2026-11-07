@@ -1,26 +1,5 @@
 schema: '2.0'
 stages:
-  ingest:
-    cmd: python -m src.ingest
-    deps:
-    - path: src/ingest.py
-      hash: md5
-      md5: 234d2e4725b7d646ee8a8bd326c4bbee
-      size: 889
-    - path: src/synthetic.py
-      hash: md5
-      md5: 27999b0ab20a4fafad1effd40a0d9ecb
-      size: 3755
-    params:
-      params.yaml:
-        data:
-          n_rows: 7000
-          seed: 42
-    outs:
-    - path: data/raw/churn.csv
-      hash: md5
-      md5: 407a20b3020208962aadddb8292b31a0
-      size: 423142
   validate:
     cmd: python -m src.validate
     deps:
