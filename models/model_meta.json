@@ -1,9 +1,9 @@
 {
   "model_name": "gpad-churn-model",
-  "model_version": "1",
-  "model_type": "logistic_regression",
+  "model_version": "3",
+  "model_type": "gradient_boosting",
   "decision_threshold": 0.35,
-  "run_id": "2925327e7b0d4ecba71b13e2ceaf76f3",
+  "run_id": "a40163abe7d24f6c840f589692e2976c",
   "train_data_md5": "1b07ab8b93016c22dcd71e23cfdc5cf8",
-  "trained_at": "2026-11-07T02:05:56+00:00"
+  "trained_at": "2026-11-07T02:41:32+00:00"
 }
