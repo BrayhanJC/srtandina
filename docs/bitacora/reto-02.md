@@ -388,8 +388,6 @@ PY
 - `docs/riesgos.md`: añadir un riesgo nuevo de categoría `datos` o `ética` vinculado con defectos del CRM, fuga, representatividad o pérdida de filas. **Pendiente de comprobar el registro**.
 - `docs/datos_gobernanza.md`: completar las cinco decisiones mínimas de gobierno exigidas por la versión lite, el análisis cuantitativo de la fuga y la tabla final de negociación. **Pendiente de verificación integral**.
 
-**Uso de IA generativa:** se utilizó ChatGPT como apoyo de estructuración documental y revisión del contrato y sus pruebas. En esta interacción se trabajó con esquemas, conteos agregados y salidas de consola; **no se compartió el CSV original de clientes**. El uso debe quedar registrado según la política del proyecto.
-
 ## 9. Contribuciones del equipo y trazabilidad
 
 La RACI del Reto 01 define los roles primarios. **No se dispone de evidencia suficiente para atribuir tareas ya realizadas a una persona específica**; antes de entregar, los tres integrantes deben completar y respaldar esta tabla con commits, PR o registros de trabajo.

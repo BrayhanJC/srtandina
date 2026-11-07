@@ -10,7 +10,7 @@ split:
   seed: 42
 
 model:
-  type: logistic_regression   # logistic_regression | random_forest | gradient_boosting
+  type: gradient_boosting     # logistic_regression | random_forest | gradient_boosting
   decision_threshold: 0.35    # probabilidad a partir de la cual se predice churn = 1
   logistic_regression:
     C: 1.0
