@@ -124,3 +124,43 @@ Umbrales de `params.yaml → gate.*`. `recall_at_eval` y `precision_at_eval` se 
 | `recall_gap_senior_citizen` | Brecha máxima 0,10 (`fairness.max_recall_gap_senior_citizen`) | Los tres cumplen. Random forest es el más equitativo (0,0667); gradient boosting queda cerca del límite (0,0952). |
 | `customers_contacted` | Capacidad de 400 llamadas por semana; en la escala del conjunto de prueba (1.361 de 6.805 clientes, 20 %) son ≈ 80 | Los tres contactan entre 448 y 474, muy por encima de la capacidad. Se debe al umbral provisional 0,35; se ajusta en el Reto 06. |
 | `net_savings_vs_random` | Ahorro frente a llamar al azar a la misma cantidad de clientes (miles de COP) | La logística aporta ≈ $2,4 M más que gradient boosting y ≈ $3,6 M más que random forest. |
+
+
+## 11. Reproducir desde cero
+
+En este punto es necesario instalar todos lo requerimientos para poder ejecutar los siguientes comandos
+
+Se tuvo incidencias en los diferentes sistemas operativos que hay en el equipo por esta razón se hacen dos guias para poder realizar la reproducción.
+
+### Isntalación Windows
+1. `git clone https://github.com/BrayhanJC/srtandina && cd strandina`
+2. `uv sync --frozen`
+3. Si el remoto es una carpeta sincronizada: 
+    `uv run dvc remote add -d almacen "<su-ruta>"`
+    `uv run dvc remote modify --local almacen url "<su-ruta>"`
+4. `uv run dvc pull`
+5. `uv run dvc repro`
+
+### Instalación Macosx
+
+1. `git clone https://github.com/BrayhanJC/srtandina && cd strandina`
+2. `uv sync --frozen --python 3.12 --managed-python`
+3. Si el remoto es una carpeta sincronizada: 
+    `uv run dvc remote add -d almacen "<su-ruta>"`
+    `uv run dvc remote modify --local almacen url "<su-ruta>"`
+4. `uv run dvc pull`
+5. `uv run dvc repro --force`
+
+Al ejecutar los modelos, `metrics.json` no cambia, como tampoco el `md5`. Pero el archivo `models/model_meta.json` si cambia.
+
+>
+>{
+>  "model_version": "3",
+>  "run_id": "1138489ef47a4861b67818d806d19851",
+>  "trained_at": "2026-11-07T17:18:09+00:00"
+>}
+>
+
+Por otro lado, tambien se tuvo que agregar `uv run dvc remote add -d almacen "<su-ruta>"` para poder crear el archivo de `config.local`
+
+Se procede a verificar el resultado de los modelos y es exactamente igual que en la corrida del integrante *Jorge Andres Angel Salazar*
