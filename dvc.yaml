@@ -1,26 +1,41 @@
 stages:
+
+  clean:
+    cmd: python -m src.clean
+    deps:
+      - data/raw/crm_extracto.csv
+      - src/clean.py
+      - src/common.py
+    outs:
+      - data/processed/clean.csv
+      - reports/cleaning.json:
+          cache: false # conteos por tratamiento: va a Git como evidencia
+
   validate:
     cmd: python -m src.validate
     deps:
-    - data/raw/churn.csv
-    - contracts/churn_contract.py
-    - src/validate.py
+      - data/processed/clean.csv
+      - data/raw/crm_extracto.csv # las advertencias se evalúan sobre el crudo
+      - reports/cleaning.json # regla de descarte máximo
+      - contracts/churn_contract.py
+      - contracts/crm_warnings.py
+      - src/validate.py
     outs:
-    - reports/validation.json:
-        cache: false
+      - reports/validation.json:
+          cache: false
 
   prepare:
     cmd: python -m src.prepare
     deps:
-    - data/raw/churn.csv
-    - reports/validation.json
-    - src/prepare.py
+      - data/processed/clean.csv
+      - reports/validation.json # prepare no corre si validate no terminó bien
+      - src/prepare.py
     params:
-    - split
+      - split
     outs:
-    - data/processed/train.csv
-    - data/processed/test.csv
-
+      - data/processed/train.csv
+      - data/processed/test.csv
+  
   train:
     cmd: python -m src.train
     deps:

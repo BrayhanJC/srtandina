@@ -7,7 +7,7 @@ Si su caso es una serie de tiempo, reemplace la partición aleatoria por una par
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from src.common import RAW_DATA, TARGET, TEST_DATA, TRAIN_DATA, load_params
+from src.common import CLEAN_DATA, TARGET, TEST_DATA, TRAIN_DATA, load_params
 
 
 def split(df: pd.DataFrame, test_size: float, seed: int) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -16,7 +16,7 @@ def split(df: pd.DataFrame, test_size: float, seed: int) -> tuple[pd.DataFrame, 
 
 def main():
     p = load_params()["split"]
-    df = pd.read_csv(RAW_DATA)
+    df = pd.read_csv(CLEAN_DATA)
     train, test = split(df, p["test_size"], p["seed"])
     TRAIN_DATA.parent.mkdir(parents=True, exist_ok=True)
     train.to_csv(TRAIN_DATA, index=False)

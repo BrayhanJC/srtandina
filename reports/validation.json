@@ -1,5 +1,8 @@
 {
   "valid": true,
-  "rows": 7000,
-  "churn_rate": 0.2741
+  "bloqueantes": {},
+  "advertencias": {
+    "(tabla) · ADVERTENCIA: fecha_alta vacía": 28,
+    "(tabla) · fecha_alta posterior a fecha_corte": 20
+  }
 }
