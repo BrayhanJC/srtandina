@@ -2,7 +2,7 @@
   "valid": true,
   "bloqueantes": {},
   "advertencias": {
-    "(tabla) Â· ADVERTENCIA: fecha_alta vacÃ­a": 28,
-    "(tabla) Â· fecha_alta posterior a fecha_corte": 20
+    "(tabla) · ADVERTENCIA: fecha_alta vacía": 28,
+    "(tabla) · fecha_alta posterior a fecha_corte": 20
   }
 }
