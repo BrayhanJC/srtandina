@@ -32,7 +32,12 @@ def test_probabilities_are_valid(model):
 
 
 def test_direction_contract(model, customer):
-    """Direccionalidad: un contrato mes a mes debe tener mayor riesgo que uno a dos años."""
+    """
+    HU-07 · Direccionalidad del contrato. Dado un cliente 
+    con contrato "two-year", cuando se cambia únicamente su 
+    contrato a "month-to-month", su probabilidad de churn es 
+    estrictamente mayor.
+    """
     monthly, two_year = customer.copy(), customer.copy()
     monthly["contract_type"] = "month-to-month"
     two_year["contract_type"] = "two-year"
@@ -40,7 +45,11 @@ def test_direction_contract(model, customer):
 
 
 def test_direction_support_tickets(model, customer):
-    """Direccionalidad: más tickets de soporte no debe reducir el riesgo."""
+    """
+    HU-07 · Direccionalidad de los tickets. Dado un cliente 
+    cualquiera, cuando sus support_tickets pasan de 0 a 8 
+    sin cambiar nada más, su probabilidad no disminuye.
+    """
     few, many = customer.copy(), customer.copy()
     few["support_tickets"], many["support_tickets"] = 0, 8
     assert model.predict_proba(many)[0, 1] >= model.predict_proba(few)[0, 1]
@@ -55,6 +64,15 @@ def test_invariance_to_customer_id(model):
 
 
 def test_metrics_meet_minimum_thresholds():
+    """HU-07 · Escenario: umbrales mínimos. Dado el modelo candidato, cuando se evalúa sobre el
+    conjunto de prueba, entonces roc_auc, recall y precision superan los valores de gate.*."""
     metrics = json.loads(METRICS_PATH.read_text())
-    gate = load_params()["gate"]
-    assert metrics["roc_auc"] >= gate["min_roc_auc"]
+    gate = load_params()["gate"]  # los MISMOS valores que aplica scripts/quality_gate.py
+    reglas = {
+        "roc_auc": "min_roc_auc",
+        "recall_at_eval": "min_recall",
+        "precision_at_eval": "min_precision",
+    }
+    for metrica, clave in reglas.items():
+        valor, minimo = metrics[metrica], gate[clave]
+        assert valor >= minimo, f"{metrica}={valor} < gate.{clave}={minimo}"
