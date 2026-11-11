@@ -5,48 +5,48 @@ stages:
     deps:
     - path: contracts/churn_contract.py
       hash: md5
-      md5: 710a74c8f684100dc0cebd2e9c62be6f
-      size: 2444
+      md5: 99b826ea5e3c72fba7d9bc3fb5ccb19f
+      size: 2512
     - path: contracts/crm_warnings.py
       hash: md5
-      md5: 98dfbb9f10b3ed8d6be7fb1489009b17
-      size: 1346
+      md5: b0cc5a0bd1365e18f65134b262ad0328
+      size: 1380
     - path: data/processed/clean.csv
       hash: md5
-      md5: 84951101e4cbb2c3d98f7d0fb62f8133
-      size: 404639
+      md5: 2122454590a7d2af6ae8b3a8be6a51d1
+      size: 411445
     - path: data/raw/crm_extracto.csv
       hash: md5
       md5: 17bca792551fe4a92d2995ad9ec06827
       size: 657548
     - path: reports/cleaning.json
       hash: md5
-      md5: 446e6a9816496386c9b6e5482f439dee
-      size: 877
+      md5: 5318f8c89c27e4b35b96406d95619618
+      size: 887
     - path: src/validate.py
       hash: md5
-      md5: 6cdab6e967448e9ba18ff70f802eca9e
-      size: 2709
+      md5: 4835328fefba2e7a4791a61fd82ddeec
+      size: 2816
     outs:
     - path: reports/validation.json
       hash: md5
-      md5: 5789f556bb7b2c54a33f8fccd0be327d
-      size: 174
+      md5: c970f2ac462b267eb289042b96400837
+      size: 178
   prepare:
     cmd: python -m src.prepare
     deps:
     - path: data/processed/clean.csv
       hash: md5
-      md5: 84951101e4cbb2c3d98f7d0fb62f8133
-      size: 404639
+      md5: 2122454590a7d2af6ae8b3a8be6a51d1
+      size: 411445
     - path: reports/validation.json
       hash: md5
-      md5: 5789f556bb7b2c54a33f8fccd0be327d
-      size: 174
+      md5: c970f2ac462b267eb289042b96400837
+      size: 178
     - path: src/prepare.py
       hash: md5
-      md5: df81a324d77fad1957929753fd30ef4d
-      size: 974
+      md5: 0b5adafd0c60179d4ed66080bd6c57fe
+      size: 1002
     params:
       params.yaml:
         split:
@@ -55,34 +55,34 @@ stages:
     outs:
     - path: data/processed/test.csv
       hash: md5
-      md5: f9a9c1c69e8c719d816164e665207ebd
-      size: 81150
+      md5: 4e6f947db0f35b196ced5ebf7397519b
+      size: 82512
     - path: data/processed/train.csv
       hash: md5
-      md5: 1b07ab8b93016c22dcd71e23cfdc5cf8
-      size: 323614
+      md5: e3b05f796ab087c671920695d2d14a59
+      size: 329059
   train:
     cmd: python -m src.train
     deps:
     - path: data/processed/train.csv
       hash: md5
-      md5: 1b07ab8b93016c22dcd71e23cfdc5cf8
-      size: 323614
+      md5: e3b05f796ab087c671920695d2d14a59
+      size: 329059
     - path: src/features.py
       hash: md5
-      md5: 6bfe0ad3060206bc77db535636592c62
-      size: 1851
+      md5: 476c7d59117f00a37527a1bf084cfe9e
+      size: 1898
     - path: src/train.py
       hash: md5
-      md5: 80cd6749339b9e838672551b68681f0f
-      size: 2798
+      md5: 3bb787a1df30c3ef2b34bf0fe1388a5e
+      size: 2886
     params:
       params.yaml:
         mlflow:
           experiment: gpad-churn
           registered_model: gpad-churn-model
         model:
-          type: gradient_boosting
+          type: logistic_regression
           decision_threshold: 0.35
           logistic_regression:
             C: 1.0
@@ -98,31 +98,31 @@ stages:
     outs:
     - path: models/model.joblib
       hash: md5
-      md5: 63b70543003fe59efdd1b6fe35bc4aa5
-      size: 275460
+      md5: a417fa63f30cefd2f606f34a897807f7
+      size: 4257
     - path: models/model_meta.json
       hash: md5
-      md5: 2c61753110a6483f3cbbd7aad9df6fb5
-      size: 278
+      md5: 1091bf85008d044c69ae675107e467f4
+      size: 289
   evaluate:
     cmd: python -m src.evaluate
     deps:
     - path: data/processed/test.csv
       hash: md5
-      md5: f9a9c1c69e8c719d816164e665207ebd
-      size: 81150
+      md5: 4e6f947db0f35b196ced5ebf7397519b
+      size: 82512
     - path: models/model.joblib
       hash: md5
-      md5: 63b70543003fe59efdd1b6fe35bc4aa5
-      size: 275460
+      md5: a417fa63f30cefd2f606f34a897807f7
+      size: 4257
     - path: models/model_meta.json
       hash: md5
-      md5: 2c61753110a6483f3cbbd7aad9df6fb5
-      size: 278
+      md5: 1091bf85008d044c69ae675107e467f4
+      size: 289
     - path: src/evaluate.py
       hash: md5
-      md5: 438368d4e5fbd43747c5112a0af5ce3a
-      size: 3919
+      md5: 900af784ac637657d3626a5ecc5fa241
+      size: 4026
     params:
       params.yaml:
         business:
@@ -135,16 +135,16 @@ stages:
     outs:
     - path: metrics.json
       hash: md5
-      md5: 46f8fce1b49bd580fb0d1893eaf6008b
-      size: 332
+      md5: 474a73acdbc8e949b137855035c90334
+      size: 345
     - path: reports/confusion_matrix.png
       hash: md5
-      md5: d6b9968bd0cc8c64ce59da123152e05d
-      size: 23594
+      md5: 00cf8f79924838b33c3299a887816b58
+      size: 23452
     - path: reports/roc_curve.csv
       hash: md5
-      md5: 038a780e66dc4dd6dc5d7f11eaa65cdb
-      size: 15224
+      md5: d015543b51ce1fe699691e5ad8b5ff26
+      size: 13667
   clean:
     cmd: python -m src.clean
     deps:
@@ -154,18 +154,18 @@ stages:
       size: 657548
     - path: src/clean.py
       hash: md5
-      md5: d536b2fbbcc0b86612bd2c0f8f43decb
-      size: 3880
+      md5: 0782ff9c41455f89f4f60b70a05829df
+      size: 3973
     - path: src/common.py
       hash: md5
-      md5: c86625a2446c9c91cf196ef3f130eaa0
-      size: 1719
+      md5: 5bc4e0c9378ebe58bcd8b831505abbbd
+      size: 1771
     outs:
     - path: data/processed/clean.csv
       hash: md5
-      md5: 84951101e4cbb2c3d98f7d0fb62f8133
-      size: 404639
+      md5: 2122454590a7d2af6ae8b3a8be6a51d1
+      size: 411445
     - path: reports/cleaning.json
       hash: md5
-      md5: 446e6a9816496386c9b6e5482f439dee
-      size: 877
+      md5: 5318f8c89c27e4b35b96406d95619618
+      size: 887

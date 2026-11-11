@@ -11,10 +11,10 @@
     "excluidas_rc3_sin_internet_cargo_mayor_60": 17
   },
   "columnas_excluidas": {
-    "region": "no canÃ³nica (Contrato Â§2.3); no se usa en el modelo (minimizaciÃ³n)",
-    "fecha_alta": "no canÃ³nica (Contrato Â§2.3); la antigÃ¼edad ya estÃ¡ en tenure_months",
-    "fecha_corte": "no canÃ³nica (Contrato Â§2.3); constante en todo el extracto, no aporta",
-    "oferta_retencion_aceptada": "fuga: se registra tras la campaÃ±a, no se conoce el lunes 06:00 (RC-5)"
+    "region": "no canónica (Contrato §2.3); no se usa en el modelo (minimización)",
+    "fecha_alta": "no canónica (Contrato §2.3); la antigüedad ya está en tenure_months",
+    "fecha_corte": "no canónica (Contrato §2.3); constante en todo el extracto, no aporta",
+    "oferta_retencion_aceptada": "fuga: se registra tras la campaña, no se conoce el lunes 06:00 (RC-5)"
   },
   "filas_salida": 6805,
   "proporcion_descartada": 0.0337
