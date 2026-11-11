@@ -82,7 +82,7 @@ stages:
           experiment: gpad-churn
           registered_model: gpad-churn-model
         model:
-          type: gradient_boosting
+          type: logistic_regression
           decision_threshold: 0.35
           logistic_regression:
             C: 1.0
@@ -98,12 +98,12 @@ stages:
     outs:
     - path: models/model.joblib
       hash: md5
-      md5: 8753b6bf45b9eb51c6a76606b21fe8c1
-      size: 275428
+      md5: a417fa63f30cefd2f606f34a897807f7
+      size: 4257
     - path: models/model_meta.json
       hash: md5
-      md5: f4cda1a9038f5e3ad55ae512b36a49d3
-      size: 287
+      md5: 1091bf85008d044c69ae675107e467f4
+      size: 289
   evaluate:
     cmd: python -m src.evaluate
     deps:
@@ -113,12 +113,12 @@ stages:
       size: 82512
     - path: models/model.joblib
       hash: md5
-      md5: 8753b6bf45b9eb51c6a76606b21fe8c1
-      size: 275428
+      md5: a417fa63f30cefd2f606f34a897807f7
+      size: 4257
     - path: models/model_meta.json
       hash: md5
-      md5: f4cda1a9038f5e3ad55ae512b36a49d3
-      size: 287
+      md5: 1091bf85008d044c69ae675107e467f4
+      size: 289
     - path: src/evaluate.py
       hash: md5
       md5: 900af784ac637657d3626a5ecc5fa241
@@ -135,16 +135,16 @@ stages:
     outs:
     - path: metrics.json
       hash: md5
-      md5: a4878c90c071f8a54958dc6aba1df25b
+      md5: 474a73acdbc8e949b137855035c90334
       size: 345
     - path: reports/confusion_matrix.png
       hash: md5
-      md5: d6b9968bd0cc8c64ce59da123152e05d
-      size: 23594
+      md5: 00cf8f79924838b33c3299a887816b58
+      size: 23452
     - path: reports/roc_curve.csv
       hash: md5
-      md5: b6d3abc6af59560bff216697ffb2e382
-      size: 15677
+      md5: d015543b51ce1fe699691e5ad8b5ff26
+      size: 13667
   clean:
     cmd: python -m src.clean
     deps:
