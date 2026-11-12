@@ -33,15 +33,36 @@ Modelo vigente: regresión logística, baseline del Reto 03 (`@champion`).
 | `eval_threshold` | umbral fijo de medición | — | 0,30 | — |
 | `max_drop_vs_champion` | caída de `roc_auc` frente al `@champion` | — | 0,01 | — |
 
-### Umbrales propuestos
+### Variabilidad entre semillas de partición
 
-Propuestos por el Líder/PO. **Pendiente de aprobación del comité.** Registrados en
-`docs/decision_log.md`.
+Reentrenamiento del mismo modelo cambiando solo `split.seed` (`dvc exp run -S split.seed=…`).
+Salida completa en `reports/semillas.csv`.
 
-| Clave | Por defecto | Propuesto | Margen vs. valor actual |
-|---|---|---|---|
-| `eval_threshold` | 0,30 | 0,30 | sin cambio |
-| `min_roc_auc` | 0,75 | 0,78 | 0,0515 |
-| `min_recall` | 0,70 | 0,72 | 0,0480 |
-| `min_precision` | 0,45 | 0,48 | 0,0494 |
-| `max_drop_vs_champion` | 0,01 | 0,01 | sin cambio |
+| `split.seed` | `roc_auc` | `recall_at_eval` | `precision_at_eval` | `recall_gap_senior_citizen` |
+|---|---|---|---|---|
+| 42 | 0,8315 | 0,7680 | 0,5294 | 0,0821 |
+| 7 | 0,8258 | 0,7733 | 0,5390 | 0,0167 |
+| 123 | 0,8304 | 0,7360 | 0,5257 | 0,0296 |
+| 2031 | 0,8316 | 0,7493 | 0,5425 | 0,0773 |
+| **Peor valor** | **0,8258** | **0,7360** | **0,5257** | — |
+| **Dispersión** | 0,0058 | 0,0373 | 0,0168 | — |
+
+Caída máxima de `roc_auc` frente al `@champion` (0,8315) entre semillas: **0,0057**.
+
+### Umbrales aprobados
+
+Aprobados por el comité el 2026-11-11. Registrados en `docs/decision_log.md`.
+
+| Clave | Por defecto | Aprobado | Peor semilla | Margen |
+|---|---|---|---|---|
+| `eval_threshold` | 0,30 | 0,30 | — | sin cambio |
+| `min_roc_auc` | 0,75 | 0,78 | 0,8258 | 0,0458 |
+| `min_recall` | 0,70 | 0,70 | 0,7360 | 0,0360 |
+| `min_precision` | 0,45 | 0,48 | 0,5257 | 0,0457 |
+| `max_drop_vs_champion` | 0,01 | 0,020 | caída máx. 0,0057 | 0,0143 |
+
+## Escenarios de rechazo
+
+| Escenario | Enlace al PR | Paso que falló | Tiempo hasta detectar | Decisión |
+|---|---|---|---|---|
+| 1 · contrato relajado | #26 | Pruebas unitarias y de contrato de datos | 7 s | Cerrado sin fusionar |
