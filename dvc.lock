@@ -85,7 +85,7 @@ stages:
           type: logistic_regression
           decision_threshold: 0.35
           logistic_regression:
-            C: 1.0
+            C: 0.0002
             max_iter: 1000
           random_forest:
             n_estimators: 300
@@ -98,11 +98,11 @@ stages:
     outs:
     - path: models/model.joblib
       hash: md5
-      md5: a417fa63f30cefd2f606f34a897807f7
+      md5: c7e1f7ea650fab8df1ef74e0f61aca39
       size: 4257
     - path: models/model_meta.json
       hash: md5
-      md5: b151413c12cf145ab0d67c0ae14bf014
+      md5: 185e90b4141c7b3207c9e9ee3a3b7c63
       size: 289
   evaluate:
     cmd: python -m src.evaluate
@@ -113,11 +113,11 @@ stages:
       size: 82512
     - path: models/model.joblib
       hash: md5
-      md5: a417fa63f30cefd2f606f34a897807f7
+      md5: c7e1f7ea650fab8df1ef74e0f61aca39
       size: 4257
     - path: models/model_meta.json
       hash: md5
-      md5: b151413c12cf145ab0d67c0ae14bf014
+      md5: 185e90b4141c7b3207c9e9ee3a3b7c63
       size: 289
     - path: src/evaluate.py
       hash: md5
@@ -135,16 +135,16 @@ stages:
     outs:
     - path: metrics.json
       hash: md5
-      md5: 474a73acdbc8e949b137855035c90334
-      size: 345
+      md5: 8b56d6f0fa0b0dcf29e743b28be2999d
+      size: 341
     - path: reports/confusion_matrix.png
       hash: md5
-      md5: 00cf8f79924838b33c3299a887816b58
-      size: 23452
+      md5: 1647dbf7b358103d95ec8e3d996f7350
+      size: 22023
     - path: reports/roc_curve.csv
       hash: md5
-      md5: d015543b51ce1fe699691e5ad8b5ff26
-      size: 13667
+      md5: ca5837542e04bc545ff5e93e2f81f509
+      size: 14061
   clean:
     cmd: python -m src.clean
     deps:
