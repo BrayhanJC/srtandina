@@ -26,7 +26,7 @@ import pandas as pd
 import pandera.errors
 
 from contracts.churn_contract import features_schema
-from src.common import FEATURES, ID_COL, MODEL_META, MODEL_PATH, REPORTS_DIR
+from src.common import FEATURES, ID_COL, MODEL_META, MODEL_PATH, REPORTS_DIR, load_params
 
 
 def score(batch: pd.DataFrame, model, meta: dict) -> pd.DataFrame:
@@ -43,26 +43,59 @@ def score(batch: pd.DataFrame, model, meta: dict) -> pd.DataFrame:
 
 def prioritize(scored: pd.DataFrame, capacity: int) -> pd.DataFrame:
     """HU-08: clientes en riesgo, en orden descendente, como máximo `capacity`, con prioridad 1..n."""
-    # TODO (Reto 04): implementar con la capacidad de la variante (`business.weekly_capacity`).
-    # La lista lleva SOLO lo que el agente necesita: prioridad, customer_id, probabilidad y versión.
-    raise NotImplementedError("Reto 04: lista del lunes con la capacidad de la variante")
+    en_riesgo = scored[scored["churn_pred"] == 1]  # 1. filtrar: probabilidad >= umbral del modelo
+    ordenados = en_riesgo.sort_values("churn_probability", ascending=False, kind="stable")  # 2. ordenar
+    lista = ordenados.head(capacity).reset_index(drop=True)  # 3. recortar a la capacidad
+    lista.insert(0, "prioridad", range(1, len(lista) + 1))
+    return lista[["prioridad", ID_COL, "churn_probability", "model_version"]]  # 4. minimizar
+
+
+def reglas_violadas(err: pandera.errors.SchemaErrors) -> dict[str, int]:
+    """{regla: filas afectadas}, sin valores ni identificadores de las filas (contrato §7.4)."""
+    fc = err.failure_cases
+    de_tabla = fc["schema_context"] == "DataFrameSchema"  # reglas entre columnas o de toda la tabla
+    columna = fc["column"].astype(str).where(~de_tabla, "(tabla)")
+    falta = fc["check"] == "column_in_dataframe"  # columna ausente: failure_case es su NOMBRE
+    columna = columna.where(~falta, fc["failure_case"].astype(str))
+    regla = columna + " · " + fc["check"].astype(str)
+    return {
+        r: int(g["index"].nunique()) if g["index"].notna().any() else len(g) for r, g in fc.groupby(regla)
+    }
+
+
+def _ruta_legible(p) -> str:
+    """Ruta relativa al directorio actual; absoluta si están en unidades distintas (Windows)."""
+    try:
+        return os.path.relpath(p)
+    except ValueError:  # p. ej. tmp_path en C: y el repositorio en D:
+        return str(p)
 
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Inferencia batch del lunes")
     parser.add_argument("batch", type=Path)
     parser.add_argument("--out-dir", type=Path, default=REPORTS_DIR)
+    parser.add_argument("--capacity", type=int, default=None, help="por defecto, business.weekly_capacity")
     args = parser.parse_args(argv)
 
     batch = pd.read_csv(args.batch)
     try:
         features_schema.validate(batch, lazy=True)
     except pandera.errors.SchemaErrors as err:
-        # TODO (Reto 04): dejar registro del rechazo en <out-dir>/rejected/<lote>.json con el nivel
-        # CRÍTICO-CONTRATO y las reglas violadas (sin customer_id), sin escribir predicciones.
+        registro = {
+            "nivel": "CRÍTICO-CONTRATO",
+            "lote": args.batch.name,
+            "fecha": datetime.now(UTC).isoformat(timespec="seconds"),
+            "filas_del_lote": len(batch),
+            "reglas_violadas": reglas_violadas(err),
+        }
+        rechazos = args.out_dir / "rejected"
+        rechazos.mkdir(parents=True, exist_ok=True)
+        destino = rechazos / f"{args.batch.stem}.json"
+        destino.write_text(json.dumps(registro, indent=2, ensure_ascii=False))
         print(
             f"[predict] 🛑 CRÍTICO-CONTRATO: el lote viola el contrato "
-            f"({len(err.failure_cases)} fallas): no se predice"
+            f"({len(err.failure_cases)} fallas): no se predice → {_ruta_legible(destino)}"
         )
         return 2
 
@@ -72,10 +105,14 @@ def main(argv=None) -> int:
     out.mkdir(parents=True, exist_ok=True)
     columnas = [ID_COL, "churn_probability", "churn_pred", "model_version", "scored_at"]
     scored[columnas].to_csv(out / f"{args.batch.stem}_scored.csv", index=False)
-    # TODO (Reto 04): generar <out-dir>/predictions/<lote>_lista.csv con prioritize() y la capacidad.
+    capacidad = args.capacity
+    if capacidad is None:  # sin --capacity: la capacidad semanal de la variante
+        capacidad = load_params()["business"]["weekly_capacity"]
+    lista = prioritize(scored, capacidad)
+    lista.to_csv(out / f"{args.batch.stem}_lista.csv", index=False)
     print(
         f"[predict] {len(scored)} clientes · {int(scored['churn_pred'].sum())} en riesgo · "
-        f"modelo v{meta['model_version']} → {os.path.relpath(out / (args.batch.stem + '_scored.csv'))}"
+        f"lista {len(lista)}/{capacidad} · modelo v{meta['model_version']} → {_ruta_legible(out)}"
     )
     return 0
 
