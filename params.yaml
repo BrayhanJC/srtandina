@@ -45,9 +45,9 @@ mlflow:
 # fija el Sponsor según la capacidad del call center (Reto 06) y no puede hacer fallar el gate.
 gate:
   eval_threshold: 0.30         # umbral fijo con el que se comparan todas las versiones
-  min_roc_auc: 0.75
-  min_recall: 0.70             # recall_at_eval (al eval_threshold)
-  min_precision: 0.45          # precision_at_eval (al eval_threshold)
+  min_roc_auc: 0.78            # V4: margen ~0.05 bajo el @champion (0.8315)
+  min_recall: 0.72             # recall_at_eval; margen ~0.05 bajo 0.7680
+  min_precision: 0.48          # precision_at_eval; equilibrio V4 = 0.13; margen ~0.05 bajo 0.5294
   max_drop_vs_champion: 0.01   # caída máxima de ROC-AUC tolerada frente al @champion actual
 
 monitoring:
