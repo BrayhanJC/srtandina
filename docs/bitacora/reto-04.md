@@ -85,3 +85,24 @@ Caída de `roc_auc` frente al `@champion`: 0,0240 con `C` = 0.0005 y 0,0300 con 
 La regla `max_drop_vs_champion` (0,020) no se evaluó en ninguno de los dos intentos: el
 registro de MLflow no tiene el alias `@champion` y el gate reporta `sin champion previo`.
 En la CI esa regla tampoco aplica, porque el registro del runner está vacío.
+
+**Qué significa que el gate acordado no detuviera el primer intento.** El gate midió bien:
+`recall_at_eval` 0,7067 supera el mínimo de 0,70, y la aritmética es correcta. El problema
+no está en la regla sino en dónde quedó el mínimo, y la razón es estructural. El mínimo se
+fijó en 0,70 para absorber la variabilidad entre cortes de datos, que medimos en 0,0373.
+Pero ese mismo espacio es donde cabe una degradación real: entre la peor semilla legítima
+(0,7360) y el modelo con `C` = 0.0005 (0,7067) hay apenas 0,024. Una sola métrica con un
+piso absoluto no puede separar ruido de deterioro cuando ambos tienen el mismo orden de
+magnitud.
+
+La regla que sí los distingue es `max_drop_vs_champion`, porque compara contra el modelo
+vigente en lugar de contra un piso fijo: la caída de 0,0240 del primer intento supera el
+0,020 acordado. No se evaluó porque el alias `@champion` no está en el registro, y en la CI
+nunca se evalúa porque el registro del runner está vacío. De ahí se sigue que la CI es
+estructuralmente más permisiva que una verificación local completa: allá el único blindaje
+son los mínimos absolutos, que son justamente los que este caso atravesó.
+
+El segundo intento deja un hallazgo adicional: con `C` = 0.0002 la brecha de recall en
+`senior_citizen` sube a 0,1227, por encima del límite de 0,10 que fija V4, y el gate la
+aprueba porque no tiene ninguna regla de equidad. Un modelo puede incumplir la política de
+equidad del contrato y pasar el gate sin que nadie se entere.
