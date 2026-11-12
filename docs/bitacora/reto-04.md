@@ -66,3 +66,22 @@ Aprobados por el comité el 2026-11-11. Registrados en `docs/decision_log.md`.
 | Escenario | Enlace al PR | Paso que falló | Tiempo hasta detectar | Decisión |
 |---|---|---|---|---|
 | 1 · contrato relajado | #26 | Pruebas unitarias y de contrato de datos | 7 s | Cerrado sin fusionar |
+| 2 · modelo degradado (`C` = 0.0002) | #28 | Quality gate | 38 s | Cerrado sin fusionar |
+
+### Escenario 2: dos intentos
+
+El primer intento (`model.logistic_regression.C` = 0.0005) **pasó el gate**. Se repitió con
+una regularización más fuerte (`C` = 0.0002), que es la corrida registrada en el PR #28.
+
+| | `@champion` | `C` = 0.0005 | `C` = 0.0002 | Mínimo del gate |
+|---|---|---|---|---|
+| `roc_auc` | 0,8315 | 0,8075 | 0,8015 | 0,78 |
+| `recall_at_eval` | 0,7680 | 0,7067 | **0,5920** | 0,70 |
+| `precision_at_eval` | 0,5294 | 0,5176 | 0,5522 | 0,48 |
+| `recall_gap_senior_citizen` | 0,0821 | 0,0784 | 0,1227 | 0,10 (política de V4, fuera del gate) |
+| Resultado del gate | — | aprobado, código 0 | **rechazado, código 1** | — |
+
+Caída de `roc_auc` frente al `@champion`: 0,0240 con `C` = 0.0005 y 0,0300 con `C` = 0.0002.
+La regla `max_drop_vs_champion` (0,020) no se evaluó en ninguno de los dos intentos: el
+registro de MLflow no tiene el alias `@champion` y el gate reporta `sin champion previo`.
+En la CI esa regla tampoco aplica, porque el registro del runner está vacío.
