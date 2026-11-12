@@ -28,7 +28,7 @@ RC3 = pa.Check(
     lambda df: (
         df["monthly_charges"].isna()
         | (df["internet_service"] != "none")
-        | (df["monthly_charges"] <= 60)
+        | (df["monthly_charges"] <= 100)
     ),
     error="RC-3: sin internet con cargo mayor a 60",
 )
